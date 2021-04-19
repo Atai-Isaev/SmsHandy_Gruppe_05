@@ -1,5 +1,6 @@
 package smsHandy.model;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -9,6 +10,8 @@ public class Provider {
     private Map<String,Integer> credits;
 
     private Map<String,SmsHandy> subscriber;
+
+    private static ArrayList<Provider> providerList;
     /**
      * Konstruktor fuer Objekte der Klasse Provider
      */
@@ -72,23 +75,24 @@ public class Provider {
 
     /**
      *  Überprüft, ob die Nummer in der Map beim Provider steht
-     * @param number - Nummer des Telefons, des wir ausprobieren
+     * @param receiver - Nummer des Telefons, des wir ausprobieren
      * @return liefert genau dann true zurück,
      * wenn ein Teilnehmer mit der Rufnummer receiver bei diesem Provider registriert ist.
      */
-    private boolean canSendTo(String number){
-        return subscriber.containsKey(number) && credits.containsKey(number);
+    private boolean canSendTo(String receiver){
+        return subscriber.containsKey(receiver) && credits.containsKey(receiver);
     }
 
     /**
      *  liefert den Provider zurück, bei dem der Teilnehmer mit der
      *  Rufnummer receiver registriert ist, oder null, wenn es die Nummer nicht gibt.
-     * @param number - Nummer des Telefons, des wir ausprobieren
+     * @param receiver - Nummer des Telefons, des wir ausprobieren
      * @return Provider oder null
      */
-    private Provider findProvideFor(String number){
-        if (canSendTo(number)){
-            return this;
+    private static Provider findProviderFor(String receiver){
+        for (Provider p: providerList) {
+            if(p.canSendTo(receiver))
+                return p;
         }
         return null;
     }

@@ -1,4 +1,4 @@
-package smsHandy.model;
+package main.smsHandy.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,17 +32,13 @@ public abstract class SmsHandy {
      * @param content - der Inhalt der SMS
      */
     public void sendSms(String to, String content) {
-        if (canSendTo(to)) {
-            Message message = new Message();
-            message.setContent(content);
-            //TODO add format
-            message.setDate(new Date());
-            message.setFrom(this.getNumber());
-            message.setTo(to);
-            provider.send(message);
-        } else {
-            System.out.println("This number is not valid!");
-        }
+        Message message = new Message();
+        message.setContent(content);
+        //TODO add format
+        message.setDate(new Date());
+        message.setFrom(this.getNumber());
+        message.setTo(to);
+        provider.send(message);
     }
 
     /**

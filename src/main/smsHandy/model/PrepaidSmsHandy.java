@@ -1,4 +1,4 @@
-package smsHandy.model;
+package main.smsHandy.model;
 
 /**
  * Klasse PrepaidSmsHandy. Ein Handy, das über ein beim

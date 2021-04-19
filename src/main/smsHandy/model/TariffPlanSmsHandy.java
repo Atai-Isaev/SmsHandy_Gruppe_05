@@ -1,4 +1,4 @@
-package smsHandy.model;
+package main.smsHandy.model;
 
 /**
  * Klasse TariffPlanSmsHandy. Ein Vertragshandy, das über eine

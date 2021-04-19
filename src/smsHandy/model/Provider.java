@@ -8,6 +8,7 @@ import java.util.Map;
 public class Provider {
     private Map<String,Integer> credits;
 
+    private Map<String,SmsHandy> subscriber;
     /**
      * Konstruktor fuer Objekte der Klasse Provider
      */
@@ -28,6 +29,10 @@ public class Provider {
      * @param smsHandy - das neue Handy
      */
     public void register(SmsHandy smsHandy){
+        if(!credits.containsKey(smsHandy.getNumber())){
+            credits.put(smsHandy.getNumber(), 0);
+            subscriber.put(smsHandy.getNumber(), smsHandy);
+        }
     }
 
     /**
@@ -39,6 +44,15 @@ public class Provider {
      * @param amount - Hoehe des Geldbetrages
      */
     public void deposit(String number, int amount){
+        try {
+            if(amount>=0){
+                credits.put(number,credits.get(number) + amount);
+            }else {
+                credits.put(number,credits.get(number) - amount);
+            }
+        }catch (NullPointerException e){
+            System.out.println("Diese Nummer ist nicht existiert ");
+        }
 
     }
 
@@ -48,6 +62,34 @@ public class Provider {
      * @return aktuelles Guthaben des Handys
      */
     public int getCreditForSmsHandy(String number){
-        return 0;
+        try {
+            return credits.get(number);
+        }catch (NullPointerException e){
+            System.out.println("Diese Nummer ist nicht existiert ");
+            return 0;
+        }
+    }
+
+    /**
+     *  Überprüft, ob die Nummer in der Map beim Provider steht
+     * @param number - Nummer des Telefons, des wir ausprobieren
+     * @return liefert genau dann true zurück,
+     * wenn ein Teilnehmer mit der Rufnummer receiver bei diesem Provider registriert ist.
+     */
+    private boolean canSendTo(String number){
+        return subscriber.containsKey(number) && credits.containsKey(number);
+    }
+
+    /**
+     *  liefert den Provider zurück, bei dem der Teilnehmer mit der
+     *  Rufnummer receiver registriert ist, oder null, wenn es die Nummer nicht gibt.
+     * @param number - Nummer des Telefons, des wir ausprobieren
+     * @return Provider oder null
+     */
+    private Provider findProvideFor(String number){
+        if (canSendTo(number)){
+            return this;
+        }
+        return null;
     }
 }

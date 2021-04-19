@@ -1,4 +1,4 @@
-package smsHandy.model;
+package main.smsHandy.model;
 
 import java.util.Date;
 

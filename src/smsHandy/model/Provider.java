@@ -27,7 +27,8 @@ public class Provider {
      * Registriert ein neues Handy bei diesem Provider.
      * @param smsHandy - das neue Handy
      */
-    public void register(SmsHandy smsHandy){}
+    public void register(SmsHandy smsHandy){
+    }
 
     /**
      * Laedt Guthaben für ein Handy auf. Das ist noetig, weil das Handy sein Guthaben nicht selbst aendern kann,

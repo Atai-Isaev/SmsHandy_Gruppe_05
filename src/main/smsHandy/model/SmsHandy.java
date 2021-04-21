@@ -11,8 +11,8 @@ import java.util.List;
 public abstract class SmsHandy {
     private String number;
     private Provider provider;
-    private List<Message> sentMessages = new ArrayList<>();
-    private List<Message> receivedMessages = new ArrayList<>();
+    private List<Message> sent;
+    private List<Message> received;
 
     /**
      * Konstruktor fuer Objekte der Klasse SmsHandy
@@ -23,6 +23,8 @@ public abstract class SmsHandy {
     public SmsHandy(String number, Provider provider) {
         this.number = number;
         this.provider = provider;
+        this.sent = new ArrayList<>();
+        this.received = new ArrayList<>();
     }
 
     /**
@@ -32,13 +34,17 @@ public abstract class SmsHandy {
      * @param content - der Inhalt der SMS
      */
     public void sendSms(String to, String content) {
-        Message message = new Message();
-        message.setContent(content);
-        //TODO add format
-        message.setDate(new Date());
-        message.setFrom(this.getNumber());
-        message.setTo(to);
-        provider.send(message);
+        if (!to.equals(this.getNumber())) {
+            Message message = new Message();
+            message.setContent(content);
+            //TODO add format
+            message.setDate(new Date());
+            message.setFrom(this.getNumber());
+            message.setTo(to);
+            provider.send(message);
+        }
+        else
+            System.out.println("Please choose a valid phone number");
     }
 
     /**
@@ -68,7 +74,8 @@ public abstract class SmsHandy {
             message.setDate(new Date());
             message.setFrom(this.getNumber());
             message.setTo(peer.getNumber());
-            this.sentMessages.add(message);
+            this.sent.add(message);
+            peer.receiveSms(message);
         } catch (NullPointerException e) {
             System.out.println("SmsHandy can't be null");
         }
@@ -82,7 +89,7 @@ public abstract class SmsHandy {
      */
     public void receiveSms(Message message) {
         try {
-            this.receivedMessages.add(message);
+            this.received.add(message);
         } catch (NullPointerException e) {
             System.out.println("Message can't be null");
         }
@@ -92,14 +99,16 @@ public abstract class SmsHandy {
      * Gibt eine Liste aller gesendete SMS auf der Konsole aus.
      */
     public void listSent() {
-        this.sentMessages.forEach(message -> System.out.println(message.toString()));
+        System.out.println();
+        this.sent.forEach(message -> System.out.println(message.toString()));
     }
 
     /**
      * Gibt eine Liste aller empfangenen SMS auf der Konsole aus.
      */
     public void listReceived() {
-        this.receivedMessages.forEach(message -> System.out.println(message.toString()));
+        System.out.println();
+        this.received.forEach(message -> System.out.println(message.toString()));
     }
 
     /**

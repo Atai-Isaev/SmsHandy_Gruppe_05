@@ -2,16 +2,50 @@ package test;
 
 import main.smsHandy.model.PrepaidSmsHandy;
 import main.smsHandy.model.Provider;
-import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SimpleTest {
+
+    private final PrintStream saveOut = System.out;
+    private final ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+    @BeforeEach
+    public void setUp() {
+        System.setOut(new PrintStream(out));
+    }
+
+    @AfterEach
+    public void restore() {
+        System.setOut(saveOut);
+    }
+
+    /**
+     * Überprüft, ob die angegebene String tatsächlich printed wurde
+     *
+     * @param s String, die printed werden soll
+     */
+    private void shouldPrint(String s) {
+        assertEquals(s, out.toString().trim());
+        out.reset();
+    }
+
+    @Test
+    public void soutTest() {
+        System.out.println("Hi");
+        shouldPrint("Hi");
+        System.out.println("Bro");
+        shouldPrint("Bro");
+    }
 
     @Test
     @DisplayName("Simple multiplication should work")

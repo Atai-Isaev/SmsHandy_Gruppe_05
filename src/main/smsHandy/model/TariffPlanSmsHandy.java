@@ -11,7 +11,7 @@ package main.smsHandy.model;
  */
 public class TariffPlanSmsHandy extends SmsHandy {
 
-    private int remainingFreeSms = 0;
+    private int remainingFreeSms;
 
     /**
      * Konstruktor zum Erstellen eines neuen TariffPlanHandy.
@@ -21,6 +21,7 @@ public class TariffPlanSmsHandy extends SmsHandy {
      */
     public TariffPlanSmsHandy(String number, Provider provider) {
         super(number, provider);
+        this.remainingFreeSms = 100;
     }
 
     /**
@@ -48,5 +49,17 @@ public class TariffPlanSmsHandy extends SmsHandy {
      */
     public int getRemainingFreeSms() {
         return remainingFreeSms;
+    }
+
+    /**
+     * Schickt eine SMS ueber den Provider an den Empfaenger.
+     *
+     * @param to      - der Empfaenger der SMS
+     * @param content - der Inhalt der SMS
+     */
+    @Override
+    public void sendSms(String to, String content) {
+        super.sendSms(to, content);
+        payForSms();
     }
 }

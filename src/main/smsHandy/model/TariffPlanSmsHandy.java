@@ -6,8 +6,8 @@ package main.smsHandy.model;
  * könnten diese nach einer bestimmten Zeit wieder zurückgesetzt
  * werden. Dies wird vorerst noch nicht berücksichtigt.
  *
- * @version 1.0
  * @author Bekzhan SATAROV
+ * @version 1.0
  */
 public class TariffPlanSmsHandy extends SmsHandy {
 
@@ -16,7 +16,7 @@ public class TariffPlanSmsHandy extends SmsHandy {
     /**
      * Konstruktor zum Erstellen eines neuen TariffPlanHandy.
      *
-     * @param number die Handynummer
+     * @param number   die Handynummer
      * @param provider die Providerinstanz
      */
     public TariffPlanSmsHandy(String number, Provider provider) {

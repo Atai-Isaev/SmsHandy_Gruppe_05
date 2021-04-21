@@ -1,5 +1,8 @@
 package main.smsHandy.model;
 
+import main.smsHandy.exception.InvalidNumberException;
+import main.smsHandy.exception.SmsHandyNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,10 +44,10 @@ public abstract class SmsHandy {
             message.setDate(new Date());
             message.setFrom(this.getNumber());
             message.setTo(to);
-            provider.send(message);
-        }
-        else
-            System.out.println("Please choose a valid phone number");
+            if (!provider.send(message))
+                throw new InvalidNumberException("Please choose a valid phone number!");
+        } else
+            throw new InvalidNumberException("You can not send sms to yourself!");
     }
 
     /**
@@ -77,7 +80,7 @@ public abstract class SmsHandy {
             this.sent.add(message);
             peer.receiveSms(message);
         } catch (NullPointerException e) {
-            System.out.println("SmsHandy can't be null");
+            throw new SmsHandyNotFoundException("SmsHandy can't be null");
         }
 
     }

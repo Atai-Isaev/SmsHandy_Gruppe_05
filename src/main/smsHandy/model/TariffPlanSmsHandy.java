@@ -1,5 +1,7 @@
 package main.smsHandy.model;
 
+import main.smsHandy.exception.ProviderNotFoundException;
+
 /**
  * Klasse TariffPlanSmsHandy. Ein Vertragshandy, das über eine
  * bestimmte Menge an Frei-SMS verfügt. In einer späteren Version
@@ -58,7 +60,7 @@ public class TariffPlanSmsHandy extends SmsHandy {
      * @param content - der Inhalt der SMS
      */
     @Override
-    public void sendSms(String to, String content) {
+    public void sendSms(String to, String content) throws ProviderNotFoundException {
         super.sendSms(to, content);
         payForSms();
     }

@@ -1,6 +1,7 @@
 package main.smsHandy.model;
 
 import main.smsHandy.exception.InvalidNumberException;
+import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.exception.SmsHandyNotFoundException;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public abstract class SmsHandy {
      * @param to      - der Empfaenger der SMS
      * @param content - der Inhalt der SMS
      */
-    public void sendSms(String to, String content) {
+    public void sendSms(String to, String content) throws ProviderNotFoundException {
         if (!to.equals(this.getNumber())) {
             Message message = new Message();
             message.setContent(content);
@@ -55,13 +56,13 @@ public abstract class SmsHandy {
      *
      * @return ist der Versand der SMS noch möglich?
      */
-    public abstract boolean canSendSms();
+    public abstract boolean canSendSms() throws ProviderNotFoundException;
 
 
     /**
      * Abstrakte Methode zum Bezahlen des SMS-Versand.
      */
-    public abstract void payForSms();
+    public abstract void payForSms() throws ProviderNotFoundException;
 
 
     /**

@@ -1,5 +1,7 @@
 package main.smsHandy.model;
 
+import main.smsHandy.exception.ProviderNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +33,7 @@ public class Provider {
      * @param message - die zu sendente SMS
      * @return true, wenn SMS gesendet werden konnte
      */
-    public boolean send(Message message) {
+    public boolean send(Message message) throws ProviderNotFoundException {
         Provider receiverProvider = findProviderFor(message.getTo());
 
         //can not be null

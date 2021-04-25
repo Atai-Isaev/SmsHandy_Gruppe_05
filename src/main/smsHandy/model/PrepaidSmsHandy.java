@@ -1,5 +1,7 @@
 package main.smsHandy.model;
 
+import main.smsHandy.exception.ProviderNotFoundException;
+
 /**
  * Klasse PrepaidSmsHandy. Ein Handy, das über ein beim
  * Provider verwaltetes Guthaben verfügt und dessen
@@ -15,11 +17,14 @@ public class PrepaidSmsHandy extends SmsHandy {
      * @param number   die Handynummer
      * @param provider die Providerinstanz
      */
-    public PrepaidSmsHandy(String number, Provider provider) {
+    public PrepaidSmsHandy(String number, Provider provider) throws ProviderNotFoundException {
         super(number, provider);
-        provider.register(this);
-        this.deposit(100);
-        System.out.println("Created new PrepaidSmsHandy: " + number);
+        try {
+            this.getProvider().register(this);
+            this.deposit(100);
+        } catch (NullPointerException e) {
+            throw new ProviderNotFoundException("Provider can't be null");
+        }
     }
 
     /**
@@ -28,20 +33,20 @@ public class PrepaidSmsHandy extends SmsHandy {
      * @return ist das Guthaben noch ausreichend?
      */
     @Override
-    public boolean canSendSms() {
-        if (this.getProvider() == null)
-            return false;
-        return this.getProvider().getCreditForSmsHandy(this.getNumber()) >= 10;
+    public boolean canSendSms() throws ProviderNotFoundException {
+        try {
+            return this.getProvider().getCreditForSmsHandy(this.getNumber()) >= 10;
+        } catch (NullPointerException e) {
+            throw new ProviderNotFoundException("Provider can't be null");
+        }
     }
 
     /**
      * Zieht die Kosten für eine SMS vom Guhaben ab.
      */
     @Override
-    public void payForSms() {
+    public void payForSms() throws ProviderNotFoundException {
         if (this.canSendSms()) this.deposit(-COST_PER_SMS);
-        else
-            System.out.println("Method payForSms: your balance =" + this.getProvider().getCreditForSmsHandy(this.getNumber()));
     }
 
     /**
@@ -49,11 +54,11 @@ public class PrepaidSmsHandy extends SmsHandy {
      *
      * @param amount Menge, um die Aufgeladen werden soll
      */
-    public void deposit(int amount) {
-        if (amount != 0) {
-            this.getProvider().deposit(this.getNumber(), amount);
-            System.out.println("Method deposit(PrepSmsHandy): " + amount + ". Now your credit is " + this.getProvider().getCreditForSmsHandy(this.getNumber()));
-        } else System.out.println("Method deposit(PrepSmsHandy): amount is equals 0");
-
+    public void deposit(int amount) throws ProviderNotFoundException {
+        try {
+            if (amount != 0) this.getProvider().deposit(this.getNumber(), amount);
+        } catch (NullPointerException e) {
+            throw new ProviderNotFoundException("Provider can't be null");
+        }
     }
 }

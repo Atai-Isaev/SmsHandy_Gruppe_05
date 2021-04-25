@@ -1,5 +1,6 @@
 package test;
 
+import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.model.PrepaidSmsHandy;
 import main.smsHandy.model.Provider;
 import main.smsHandy.model.TariffPlanSmsHandy;
@@ -49,7 +50,7 @@ public class SimpleTest {
 
     @Test
     @DisplayName("Simple multiplication should work")
-    public void someTest() {
+    public void someTest() throws ProviderNotFoundException {
         Provider provider = new Provider();
         Provider provider1 = new Provider();
         provider.setName("O!");

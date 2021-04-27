@@ -55,40 +55,40 @@ public class SimpleTest {
         Provider provider1 = new Provider();
         provider.setName("O!");
         provider1.setName("Beeline");
-        PrepaidSmsHandy prepaidSmsHandyO = new PrepaidSmsHandy("123", provider);
-        PrepaidSmsHandy prepaidSmsHandyO2 = new PrepaidSmsHandy("345", provider);
+        PrepaidSmsHandy prepaidSmsHandyTelekom = new PrepaidSmsHandy("123", provider);
+        PrepaidSmsHandy prepaidSmsHandyTelekom2 = new PrepaidSmsHandy("345", provider);
         PrepaidSmsHandy prepaidSmsHandyBeeline = new PrepaidSmsHandy("222", provider1);
-        TariffPlanSmsHandy tariffSmsHandyO = new TariffPlanSmsHandy("001", provider);
+        TariffPlanSmsHandy tariffSmsHandyTelekom = new TariffPlanSmsHandy("001", provider);
         TariffPlanSmsHandy tariffSmsHandyBeeline = new TariffPlanSmsHandy("002", provider1);
 
 
-        prepaidSmsHandyO.sendSms("*101#", "");
-        assertEquals(100, prepaidSmsHandyO.getProvider().getCreditForSmsHandy(prepaidSmsHandyO.getNumber()));
-        prepaidSmsHandyO.sendSms(prepaidSmsHandyO2.getNumber(), "Hallo");
-        assertEquals(90, prepaidSmsHandyO.getProvider().getCreditForSmsHandy(prepaidSmsHandyO.getNumber()));
-        prepaidSmsHandyO2.listReceived();
-        prepaidSmsHandyO.sendSms(prepaidSmsHandyBeeline.getNumber(), "Haaaaallo");
-        assertEquals(80, prepaidSmsHandyO.getProvider().getCreditForSmsHandy(prepaidSmsHandyO.getNumber()));
+        prepaidSmsHandyTelekom.sendSms("*101#", "");
+        assertEquals(100, prepaidSmsHandyTelekom.getProvider().getCreditForSmsHandy(prepaidSmsHandyTelekom.getNumber()));
+        prepaidSmsHandyTelekom.sendSms(prepaidSmsHandyTelekom2.getNumber(), "Hallo");
+        assertEquals(90, prepaidSmsHandyTelekom.getProvider().getCreditForSmsHandy(prepaidSmsHandyTelekom.getNumber()));
+        prepaidSmsHandyTelekom2.listReceived();
+        prepaidSmsHandyTelekom.sendSms(prepaidSmsHandyBeeline.getNumber(), "Haaaaallo");
+        assertEquals(80, prepaidSmsHandyTelekom.getProvider().getCreditForSmsHandy(prepaidSmsHandyTelekom.getNumber()));
         prepaidSmsHandyBeeline.listReceived();
 
-        prepaidSmsHandyO.sendSmsDirect(prepaidSmsHandyO2, "Direct message");
-        assertEquals(80, prepaidSmsHandyO.getProvider().getCreditForSmsHandy(prepaidSmsHandyO.getNumber()));
-        prepaidSmsHandyO.listSent();
-        prepaidSmsHandyO2.listReceived();
-        prepaidSmsHandyO.sendSmsDirect(prepaidSmsHandyBeeline, "Direct message");
-        assertEquals(80, prepaidSmsHandyO.getProvider().getCreditForSmsHandy(prepaidSmsHandyO.getNumber()));
-        prepaidSmsHandyO.listSent();
+        prepaidSmsHandyTelekom.sendSmsDirect(prepaidSmsHandyTelekom2, "Direct message");
+        assertEquals(80, prepaidSmsHandyTelekom.getProvider().getCreditForSmsHandy(prepaidSmsHandyTelekom.getNumber()));
+        prepaidSmsHandyTelekom.listSent();
+        prepaidSmsHandyTelekom2.listReceived();
+        prepaidSmsHandyTelekom.sendSmsDirect(prepaidSmsHandyBeeline, "Direct message");
+        assertEquals(80, prepaidSmsHandyTelekom.getProvider().getCreditForSmsHandy(prepaidSmsHandyTelekom.getNumber()));
+        prepaidSmsHandyTelekom.listSent();
         prepaidSmsHandyBeeline.listReceived();
 
-//        tariffSmsHandyO.sendSms("", "Tarrifsms");
+//        tariffSmsHandyTelekom.sendSms("", "Tarrifsms");
 //        String str = "Please choose a valid phone number";
 //        System.out.println(str);
 //        assertEquals(str, outContent.toString());
-//        tariffSmsHandyO.sendSms("001", "");
+//        tariffSmsHandyTelekom.sendSms("001", "");
 //        assertEquals(str, outContent.toString());
-        tariffSmsHandyO.sendSms("002", "Hallo aus dem anderem Seit!");
-        tariffSmsHandyO.listSent();
-        assertEquals(99, tariffSmsHandyO.getRemainingFreeSms());
+        tariffSmsHandyTelekom.sendSms("002", "Hallo aus dem anderem Seit!");
+        tariffSmsHandyTelekom.listSent();
+        assertEquals(99, tariffSmsHandyTelekom.getRemainingFreeSms());
         tariffSmsHandyBeeline.listReceived();
     }
 

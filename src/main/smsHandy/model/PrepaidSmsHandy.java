@@ -20,7 +20,6 @@ public class PrepaidSmsHandy extends SmsHandy {
     public PrepaidSmsHandy(String number, Provider provider) throws ProviderNotFoundException {
         super(number, provider);
         try {
-            this.getProvider().register(this);
             this.deposit(100);
         } catch (NullPointerException e) {
             throw new ProviderNotFoundException("Provider can't be null");

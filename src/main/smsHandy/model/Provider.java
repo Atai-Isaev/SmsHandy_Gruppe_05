@@ -1,6 +1,7 @@
 package main.smsHandy.model;
 
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,11 +13,11 @@ import java.util.Map;
  */
 public class Provider {
     private String name;
-    private Map<String, Integer> credits;
+    private final Map<String, Integer> credits;
 
-    private Map<String, SmsHandy> subscriber;
+    private final Map<String, SmsHandy> subscriber;
 
-    private static ArrayList<Provider> providersList = new ArrayList<>();
+    public static final ArrayList<Provider> providersList = new ArrayList<>();
 
     /**
      * Konstruktor fuer Objekte der Klasse Provider
@@ -35,34 +36,41 @@ public class Provider {
      */
     public boolean send(Message message) throws ProviderNotFoundException {
         Provider receiverProvider = findProviderFor(message.getTo());
+        Provider senderProvider = findProviderFor(message.getFrom());
+            //can not be null
+            if (senderProvider != null && senderProvider.equals(this)){
+                SmsHandy senderSmsHandyInThisProvider = subscriber.get(message.getFrom());
+                SmsHandy receiverSmsHandyInThisProvider = subscriber.get(message.getTo());
 
-        //can not be null
-        SmsHandy senderSmsHandyInThisProvider = subscriber.get(message.getFrom());
-
-        SmsHandy receiverSmsHandyInThisProvider = subscriber.get(message.getFrom());
-
-        if (message.getTo().equals("*101#")) {
-            Message tempMessage = new Message();
-            tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom()));
-            tempMessage.setFrom(this.getName());
-            //TODO format of Date
-            tempMessage.setDate(new Date());
-            tempMessage.setTo(message.getFrom());
-            senderSmsHandyInThisProvider.receiveSms(tempMessage);
-            return true;
-        } else if (receiverSmsHandyInThisProvider != null) {
-            if (senderSmsHandyInThisProvider.canSendSms()) {
-                receiverSmsHandyInThisProvider.receiveSms(message);
-                senderSmsHandyInThisProvider.payForSms();
-                return true;
-            } else {
+                if (message.getTo().equals("*101#")) {
+                    Message tempMessage = new Message();
+                    tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom()));
+                    tempMessage.setFrom(this.getName());
+                    //TODO format of Date
+                    tempMessage.setDate(new Date());
+                    tempMessage.setTo(message.getFrom());
+                    senderSmsHandyInThisProvider.receiveSms(tempMessage);
+                    return true;
+                } else if (receiverSmsHandyInThisProvider != null) {
+                    if (senderSmsHandyInThisProvider.canSendSms()) {
+                        receiverSmsHandyInThisProvider.receiveSms(message);
+                        senderSmsHandyInThisProvider.payForSms();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if (receiverProvider != null) {
+                    receiverSmsHandyInThisProvider = receiverProvider.getSubscriber().get(message.getTo());
+                    receiverSmsHandyInThisProvider.receiveSms(message);
+                    senderSmsHandyInThisProvider.payForSms();
+                    return true;
+                }
                 return false;
             }
-        } else if (receiverProvider != null) {
-            receiverProvider.send(message);
-        }
-
-        return false;
+            else if (receiverProvider!=null){
+                receiverProvider.send(message);
+            }
+            return false;
 
     }
 
@@ -71,11 +79,24 @@ public class Provider {
      *
      * @param smsHandy - das neue Handy
      */
-    public void register(SmsHandy smsHandy) {
-        if (!credits.containsKey(smsHandy.getNumber())) {
-            credits.put(smsHandy.getNumber(), 0);
-            subscriber.put(smsHandy.getNumber(), smsHandy);
+    public void register(SmsHandy smsHandy) throws ProviderNotFoundException {
+        try {
+            if (!subscriber.containsKey(smsHandy.getNumber())){
+                if (smsHandy.getClass() == PrepaidSmsHandy.class && !credits.containsKey(smsHandy.getNumber())){
+                    credits.put(smsHandy.getNumber(), 0);
+                    subscriber.put(smsHandy.getNumber(), smsHandy);
+                }
+                else if (smsHandy.getClass() == TariffPlanSmsHandy.class) {
+                    subscriber.put(smsHandy.getNumber(), smsHandy);
+                }
+            }
+            else {
+                System.out.println("Diese Nummer ist bereits beim Provider "+this.getName()+" registriert ");
+            }
+        }catch (NullPointerException e){
+            throw new ProviderNotFoundException("Provider can't be null");
         }
+
     }
 
     /**
@@ -89,10 +110,14 @@ public class Provider {
      */
     public void deposit(String number, int amount) {
         try {
-            credits.put(number, credits.get(number) + amount);
-
+            if(credits.containsKey(number)){
+                credits.put(number, credits.get(number) + amount);
+            }
+            else{
+                System.out.println("Diese Nummer ist nicht Prepaid");
+            }
         } catch (NullPointerException e) {
-            System.out.println("Diese Nummer ist nicht existiert ");
+            throw new SmsHandyNotFoundException("Number can't be empty");
         }
 
     }
@@ -107,8 +132,7 @@ public class Provider {
         try {
             return credits.get(number);
         } catch (NullPointerException e) {
-            System.out.println("Diese Nummer ist nicht existiert ");
-            return 0;
+            throw new SmsHandyNotFoundException("Number can't be empty");
         }
     }
 
@@ -120,7 +144,11 @@ public class Provider {
      * wenn ein Teilnehmer mit der Rufnummer receiver bei diesem Provider registriert ist.
      */
     private boolean canSendTo(String receiver) {
-        return subscriber.containsKey(receiver);
+        try {
+            return subscriber.containsKey(receiver);
+        }catch (NullPointerException e){
+            throw new SmsHandyNotFoundException("Number can't be empty");
+        }
     }
 
     /**
@@ -130,7 +158,7 @@ public class Provider {
      * @param receiver - Nummer des Telefons, des wir ausprobieren
      * @return Provider oder null
      */
-    private static Provider findProviderFor(String receiver) {
+    private static Provider findProviderFor(String receiver) throws SmsHandyNotFoundException{
         for (Provider p : providersList) {
             if (p.canSendTo(receiver))
                 return p;
@@ -154,5 +182,23 @@ public class Provider {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Gibt den liste mit Nummers zurück.
+     *
+     * @return Map = Map mit Prepaid Nummers
+     */
+    public Map<String, Integer> getCredits() {
+        return credits;
+    }
+
+    /**
+     * Gibt den liste mit Nummers zurück.
+     *
+     * @return Map = Map mit alle Nummers von Provider
+     */
+    public Map<String, SmsHandy> getSubscriber() {
+        return subscriber;
     }
 }

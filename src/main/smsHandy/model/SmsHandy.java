@@ -24,11 +24,19 @@ public abstract class SmsHandy {
      * @param number   - die Handynummer
      * @param provider - die Providerinstanz
      */
-    public SmsHandy(String number, Provider provider) {
-        this.number = number;
-        this.provider = provider;
-        this.sent = new ArrayList<>();
-        this.received = new ArrayList<>();
+    public SmsHandy(String number, Provider provider) throws ProviderNotFoundException {
+        try {
+            this.number = number;
+            this.provider = provider;
+            this.sent = new ArrayList<>();
+            this.received = new ArrayList<>();
+
+            this.getProvider().register(this);
+        } catch (NullPointerException e) {
+            throw  new ProviderNotFoundException("Provider can't be null");
+        }
+
+
     }
 
     /**
@@ -104,7 +112,7 @@ public abstract class SmsHandy {
      */
     public void listSent() {
         System.out.println();
-        this.sent.forEach(message -> System.out.println(message.toString()));
+        this.sent.forEach(message -> System.out.println(message.getContent()));
     }
 
     /**
@@ -112,7 +120,7 @@ public abstract class SmsHandy {
      */
     public void listReceived() {
         System.out.println();
-        this.received.forEach(message -> System.out.println(message.toString()));
+        this.received.forEach(message -> System.out.println(message.getContent()));
     }
 
     /**

@@ -21,7 +21,7 @@ public class TariffPlanSmsHandy extends SmsHandy {
      * @param number   die Handynummer
      * @param provider die Providerinstanz
      */
-    public TariffPlanSmsHandy(String number, Provider provider) {
+    public TariffPlanSmsHandy(String number, Provider provider) throws ProviderNotFoundException {
         super(number, provider);
         this.remainingFreeSms = 100;
     }

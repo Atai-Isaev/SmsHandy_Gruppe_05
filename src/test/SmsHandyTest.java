@@ -16,7 +16,6 @@ public class SmsHandyTest {
     @Test
     @DisplayName("Test method-sendSms SmsHandy")
     public void testSendSmsSmsHandy() throws ProviderNotFoundException {
-
         Provider provider = new Provider();
         Provider provider1 = new Provider();
         provider.setName("O!");

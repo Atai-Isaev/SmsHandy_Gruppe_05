@@ -67,8 +67,8 @@ public class Provider {
                 }
                 return false;
             }
-            else if (receiverProvider!=null){
-                receiverProvider.send(message);
+            else if (senderProvider!=null){
+                senderProvider.send(message);
             }
             return false;
 

@@ -3,10 +3,7 @@ package test;
 import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.exception.SmsHandyNotFoundException;
 import main.smsHandy.model.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -16,22 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ProviderTest {
 
-    private static Provider provider;
-    private static Provider provider2;
-    private static SmsHandy prepaid;
-    private static SmsHandy tariffPlan;
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
 
     @BeforeAll
-    static void initialize() throws ProviderNotFoundException {
+    static void initialize()  {
         System.setOut(new PrintStream(outContent));
-       provider = new Provider();
-       provider.setName("Telecom");
-       provider2 = new Provider();
-       provider2.setName("Vodafone");
-       prepaid = new PrepaidSmsHandy("015257000263",provider);
-       tariffPlan = new TariffPlanSmsHandy("015250007245",provider);
     }
 
     @AfterAll
@@ -41,7 +28,9 @@ public class ProviderTest {
 
     @Test
     @DisplayName("Test for providerList on the added provider")
-    public void providerListTest(){
+    public void providerListTest() throws ProviderNotFoundException{
+        Provider provider = new Provider();
+        provider.setName("Telecom");
         assertEquals(1,Provider.providersList.size());
         assertEquals(provider, Provider.providersList.get(0));
     }
@@ -49,7 +38,13 @@ public class ProviderTest {
     @Test
     @DisplayName("Test for all small Methods like register(), deposit(), " +
             "getCreditForSmsHandy() in Provider class")
-    public void allSmallMethodsTest(){
+    public void allSmallMethodsTest() throws ProviderNotFoundException{
+        Provider provider = new Provider();
+        provider.setName("Telecom");
+        Provider provider2 = new Provider();
+        provider2.setName("Vodafone");
+        SmsHandy prepaid = new PrepaidSmsHandy("015257000263",provider);
+        SmsHandy tariffPlan = new TariffPlanSmsHandy("015250007245",provider);
         assertEquals(100,provider.getCredits().get(prepaid.getNumber()));
         assertEquals(prepaid,provider.getSubscriber().get(prepaid.getNumber()));
         provider.deposit(prepaid.getNumber(),30);
@@ -61,6 +56,12 @@ public class ProviderTest {
     @Test
     @DisplayName("Test for send() Method in Provider class")
     public void sendMethodTest() throws ProviderNotFoundException {
+        Provider provider = new Provider();
+        provider.setName("Telecom");
+        Provider provider2 = new Provider();
+        provider2.setName("Vodafone");
+        SmsHandy prepaid = new PrepaidSmsHandy("015257000263",provider);
+        SmsHandy tariffPlan = new TariffPlanSmsHandy("015250007245",provider);
         SmsHandy anotherProviderHandy = new PrepaidSmsHandy("015258009089", provider2);
 
         Message message1 = new Message("Guten Tag!",new Date(),prepaid.getNumber(),tariffPlan.getNumber());

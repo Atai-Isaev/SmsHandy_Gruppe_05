@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PrepaidSmsHandyTest {
+    // TODO: 05.05.2021 BeforeEach nutzen
 
     @Test
     @DisplayName("Test Provider not found for Constructor PrepaidSmsHandy")

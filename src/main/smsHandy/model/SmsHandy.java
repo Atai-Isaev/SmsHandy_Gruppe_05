@@ -103,6 +103,7 @@ public abstract class SmsHandy {
         try {
             this.received.add(message);
         } catch (NullPointerException e) {
+            // TODO: 05.05.2021 Eine Überprüfung der Message auf Null ist nicht notwendig. Sie können "this" und "received" überprüfen und für null erhalten.
             System.out.println("Message can't be null");
         }
     }

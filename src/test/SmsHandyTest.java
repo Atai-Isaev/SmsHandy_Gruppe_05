@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SmsHandyTest {
 
+    // TODO: 07.05.2021 BeforeEach nutzen
+
     @Test
     @DisplayName("Test method-sendSms SmsHandy")
     public void testSendSmsSmsHandy() throws ProviderNotFoundException {

@@ -16,6 +16,8 @@ public class ProviderTest {
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
 
+    // TODO: 07.05.2021 BeforeEach nutzen
+
     @BeforeAll
     static void initialize()  {
         System.setOut(new PrintStream(outContent));

@@ -30,7 +30,6 @@ public abstract class SmsHandy {
             this.provider = provider;
             this.sent = new ArrayList<>();
             this.received = new ArrayList<>();
-
             this.getProvider().register(this);
         } catch (NullPointerException e) {
             throw  new ProviderNotFoundException("Provider can't be null");
@@ -49,7 +48,6 @@ public abstract class SmsHandy {
         if (!to.equals(this.getNumber())) {
             Message message = new Message();
             message.setContent(content);
-            //TODO add format
             message.setDate(new Date());
             message.setFrom(this.getNumber());
             message.setTo(to);
@@ -100,12 +98,8 @@ public abstract class SmsHandy {
      * @param message - das Message-Objekt, welches an das zweite Handy gesendet werden soll
      */
     public void receiveSms(Message message) {
-        try {
+
             this.received.add(message);
-        } catch (NullPointerException e) {
-            // TODO: 05.05.2021 Eine Überprüfung der Message auf Null ist nicht notwendig. Sie können "this" und "received" überprüfen und für null erhalten.
-            System.out.println("Message can't be null");
-        }
     }
 
     /**

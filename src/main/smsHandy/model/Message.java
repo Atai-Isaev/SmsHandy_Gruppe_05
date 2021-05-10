@@ -15,7 +15,10 @@ public class Message {
      * Konstruktor ohne Parameter
      */
     public Message() {
-        // TODO: 05.05.2021 Füllen von Klassenvariablen mit leeren Standardwerten
+        this.content = "";
+        this.date = new Date();
+        this.from = "";
+        this.to = "";
     }
 
     /**

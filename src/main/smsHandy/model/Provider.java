@@ -46,7 +46,6 @@ public class Provider {
                     Message tempMessage = new Message();
                     tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom()));
                     tempMessage.setFrom(this.getName());
-                    //TODO format of Date
                     tempMessage.setDate(new Date());
                     tempMessage.setTo(message.getFrom());
                     senderSmsHandyInThisProvider.receiveSms(tempMessage);

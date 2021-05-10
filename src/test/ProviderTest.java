@@ -16,11 +16,26 @@ public class ProviderTest {
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
 
-    // TODO: 07.05.2021 BeforeEach nutzen
+    // TODO: 11.05.2021 Ueber ein Bug in sendMethodTest() fragen
+    private Provider provider;
+    private Provider provider2;
+    private SmsHandy prepaid;
+    private SmsHandy tariffPlan;
 
     @BeforeAll
     static void initialize()  {
-        System.setOut(new PrintStream(outContent));
+      System.setOut(new PrintStream(outContent));
+    }
+
+    @BeforeEach
+    public void init() throws ProviderNotFoundException {
+        provider = new Provider();
+        provider.setName("Telecom");
+        provider2 = new Provider();
+        provider2.setName("Vodafone");
+        prepaid = new PrepaidSmsHandy("015257000263",provider);
+        tariffPlan = new TariffPlanSmsHandy("015250007245",provider);
+
     }
 
     @AfterAll
@@ -29,43 +44,8 @@ public class ProviderTest {
     }
 
     @Test
-    @DisplayName("Test for providerList on the added provider")
-    public void providerListTest() throws ProviderNotFoundException{
-        Provider provider = new Provider();
-        provider.setName("Telecom");
-        assertEquals(1,Provider.providersList.size());
-        assertEquals(provider, Provider.providersList.get(0));
-    }
-
-    @Test
-    @DisplayName("Test for all small Methods like register(), deposit(), " +
-            "getCreditForSmsHandy() in Provider class")
-    public void allSmallMethodsTest() throws ProviderNotFoundException{
-        Provider provider = new Provider();
-        provider.setName("Telecom");
-        Provider provider2 = new Provider();
-        provider2.setName("Vodafone");
-        SmsHandy prepaid = new PrepaidSmsHandy("015257000263",provider);
-        SmsHandy tariffPlan = new TariffPlanSmsHandy("015250007245",provider);
-        assertEquals(100,provider.getCredits().get(prepaid.getNumber()));
-        assertEquals(prepaid,provider.getSubscriber().get(prepaid.getNumber()));
-        provider.deposit(prepaid.getNumber(),30);
-        assertEquals(130,provider.getCreditForSmsHandy(prepaid.getNumber()));
-        assertEquals(tariffPlan,provider.getSubscriber().get(tariffPlan.getNumber()));
-        assertNull( provider.getCredits().get(tariffPlan.getNumber()));
-    }
-
-    @Test
     @DisplayName("Test for send() Method in Provider class")
     public void sendMethodTest() throws ProviderNotFoundException {
-        Provider provider = new Provider();
-        provider.setName("Telecom");
-        Provider provider2 = new Provider();
-        provider2.setName("Vodafone");
-        SmsHandy prepaid = new PrepaidSmsHandy("015257000263",provider);
-        SmsHandy tariffPlan = new TariffPlanSmsHandy("015250007245",provider);
-        SmsHandy anotherProviderHandy = new PrepaidSmsHandy("015258009089", provider2);
-
         Message message1 = new Message("Guten Tag!",new Date(),prepaid.getNumber(),tariffPlan.getNumber());
         assertTrue(provider.send(message1));
         tariffPlan.listReceived();
@@ -82,4 +62,25 @@ public class ProviderTest {
         Message messageWithWrongSender = new Message("Falsche Sender", new Date(),"wrong number",prepaid.getNumber());
         assertFalse(provider.send(messageWithWrongSender));
     }
+
+    @Test
+    @DisplayName("Test for providerList on the added provider")
+    public void providerListTest() throws ProviderNotFoundException{
+        assertEquals(2,Provider.providersList.size());
+        assertEquals(provider, Provider.providersList.get(0));
+    }
+
+    @Test
+    @DisplayName("Test for all small Methods like register(), deposit(), " +
+            "getCreditForSmsHandy() in Provider class")
+    public void allSmallMethodsTest() throws ProviderNotFoundException{
+        assertEquals(100,provider.getCredits().get(prepaid.getNumber()));
+        assertEquals(prepaid,provider.getSubscriber().get(prepaid.getNumber()));
+        provider.deposit(prepaid.getNumber(),30);
+        assertEquals(130,provider.getCreditForSmsHandy(prepaid.getNumber()));
+        assertEquals(tariffPlan,provider.getSubscriber().get(tariffPlan.getNumber()));
+        assertNull( provider.getCredits().get(tariffPlan.getNumber()));
+    }
+
+
 }

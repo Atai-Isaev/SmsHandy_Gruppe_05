@@ -35,7 +35,6 @@ public class SmsHandyTest {
         tariffSmsHandyBeeline = new TariffPlanSmsHandy("002", provider2);
 
     }
-    // TODO: 07.05.2021 BeforeEach nutzen
 
     @Test
     @DisplayName("Test method-sendSms SmsHandy")

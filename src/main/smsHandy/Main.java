@@ -12,6 +12,7 @@ import main.smsHandy.model.PrepaidSmsHandy;
 import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
+import main.smsHandy.view.MainOverviewController;
 
 import java.io.IOException;
 
@@ -41,6 +42,13 @@ public class Main extends Application {
         TariffPlanSmsHandy handy1 = new TariffPlanSmsHandy("456", provider1);
         TariffPlanSmsHandy handy2 = new TariffPlanSmsHandy("567", provider2);
         TariffPlanSmsHandy handy3 = new TariffPlanSmsHandy("678", provider3);
+
+        smsHandyData.add(prepaidSmsHandyO);
+        smsHandyData.add(prepaidSmsHandy1);
+        smsHandyData.add(prepaidSmsHandy2);
+        smsHandyData.add(handy1);
+        smsHandyData.add(handy2);
+        smsHandyData.add(handy3);
     }
 
     public ObservableList<Provider> getProvidersData() {
@@ -68,6 +76,8 @@ public class Main extends Application {
             Scene scene = new Scene(parent);
             primaryStage.setScene(scene);
             primaryStage.show();
+            MainOverviewController moc = loader.getController();
+            moc.setMain(this);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -3,33 +3,31 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.smsHandy.view.MainOverviewController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.smsHandy.view.MainOverviewController">
     <children>
-        <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <bottom>
                 <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <buttons>
-                        <Button mnemonicParsing="false" text="Button"/>
-                        <Button mnemonicParsing="false" text="Button"/>
-                        <Button mnemonicParsing="false" text="Button"/>
+                        <Button mnemonicParsing="false" text="Button" />
+                        <Button mnemonicParsing="false" text="Button" />
+                        <Button mnemonicParsing="false" text="Button" />
                     </buttons>
                 </ButtonBar>
             </bottom>
             <left>
-                <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                <TableView fx:id="providerTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <columns>
-                        <TableColumn fx:id="providerNameColumn" prefWidth="75.0" text="Provider Name"/>
+                        <TableColumn fx:id="providerNameColumn" prefWidth="75.0" text="Provider Name" />
                     </columns>
                 </TableView>
             </left>
             <center>
-                <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                <TableView fx:id="smsHandyTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <columns>
-                        <TableColumn fx:id="smsHandyNameColumn" prefWidth="75.0" text="smsHandy Name"/>
-                        <TableColumn fx:id="smsHandyArtColumn" prefWidth="75.0" text="smsHandy Art"/>
-                        <TableColumn fx:id="smsHandyGuthabenColumn" prefWidth="75.0" text="smsHandy Guthaben"/>
+                        <TableColumn fx:id="smsHandyNameColumn" prefWidth="75.0" text="smsHandy Name" />
+                        <TableColumn fx:id="smsHandyArtColumn" prefWidth="75.0" text="smsHandy Art" />
+                        <TableColumn fx:id="smsHandyGuthabenColumn" prefWidth="75.0" text="smsHandy Guthaben" />
                     </columns>
                 </TableView>
             </center>

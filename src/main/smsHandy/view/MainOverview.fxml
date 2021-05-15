@@ -11,7 +11,8 @@
                     <buttons>
                         <Button mnemonicParsing="false" text="Button" />
                         <Button mnemonicParsing="false" text="Button" />
-                        <Button mnemonicParsing="false" text="Button" />
+                  <Button mnemonicParsing="false" text="Button" />
+                        <Button mnemonicParsing="false" onAction="#handleNewProvider" text="New Provider" />
                     </buttons>
                 </ButtonBar>
             </bottom>

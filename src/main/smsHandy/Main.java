@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.model.PrepaidSmsHandy;
@@ -13,6 +15,7 @@ import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
 import main.smsHandy.view.MainOverviewController;
+import main.smsHandy.view.ProviderEditDialogController;
 
 import java.io.IOException;
 
@@ -81,6 +84,50 @@ public class Main extends Application {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Opens a dialog to edit details for the specified provider. If the user
+     * clicks OK, the changes are saved into the provided provider object and true
+     * is returned.
+     *
+     * @param provider the provider object to be edited
+     * @return true if the user clicked OK, false otherwise.
+     */
+    public boolean showProviderEditDialog(Provider provider) {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/ProviderEditDialog.fxml"));
+//            Parent parent = loader.load();
+//            Scene scene=new Scene(parent);
+//            primaryStage.setScene(scene);
+//            primaryStage.show();
+//            ProviderEditDialogController providerEditDialogController = loader.getController();
+//            providerEditDialogController.setDialogStage(this);
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Provider");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the provider into the controller.
+            ProviderEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setProvider(provider);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

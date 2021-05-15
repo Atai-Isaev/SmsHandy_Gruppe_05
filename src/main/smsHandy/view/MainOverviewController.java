@@ -1,6 +1,5 @@
 package main.smsHandy.view;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -58,4 +57,18 @@ public class MainOverviewController {
         providerTableView.setItems(main.getProvidersData());
         smsHandyTableView.setItems(main.getSmsHandyData());
     }
+
+    /**
+     * Called when the user clicks the new button. Opens a dialog to edit
+     * details for a new provider.
+     */
+    @FXML
+    private void handleNewProvider() {
+        Provider tempProvider = new Provider();
+        boolean okClicked = main.showProviderEditDialog(tempProvider);
+        if (okClicked) {
+            main.getProvidersData().add(tempProvider);
+        }
+    }
+
 }

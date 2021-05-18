@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -20,14 +21,23 @@
             <Label prefHeight="136.0" prefWidth="312.0" text="Provider Name" textAlignment="CENTER">
                <font>
                   <Font size="24.0" />
-               </font></Label>
+               </font>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin></Label>
             <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
               <buttons>
                 <Button mnemonicParsing="false" onAction="#handleOk" text="Ok" />
                   <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
               </buttons>
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
             </ButtonBar>
-            <TextField fx:id="providerNameField" GridPane.columnIndex="1" />
+            <TextField fx:id="providerNameField" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets left="10.0" right="10.0" />
+               </GridPane.margin></TextField>
          </children>
       </GridPane>
    </children>

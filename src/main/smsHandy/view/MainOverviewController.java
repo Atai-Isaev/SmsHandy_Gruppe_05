@@ -127,16 +127,39 @@ public class MainOverviewController {
         }
     }
 
+    @FXML
+    private void handleDeleteSmsHandy(){
+        int selectedHandyIndex = smsHandyTableView.getSelectionModel().getSelectedIndex();
+        if (selectedHandyIndex>=0){
+            smsHandyTableView.getItems().remove(selectedHandyIndex);
+        }
+        else{
+            alert("Please select a SMS-Handy in the table.");
+        }
+    }
+
+    @FXML
+    private void handleDeletePovider(){
+        int selectedPoviderIndex = providerTableView.getSelectionModel().getSelectedIndex();
+        if (selectedPoviderIndex>=0){
+            providerTableView.getItems().remove(selectedPoviderIndex);
+        }
+        else{
+            alert("Please select a Provider in the table.");
+        }
+    }
+
     private void changeCreateOrEditSmsHandyButtonPlaceholder(String buttonPlaceholder) {
         createOrEditSmsHandyButton.setText(buttonPlaceholder);
     }
 
     private void alert(String text) {
         Alert alert = new Alert(
-                Alert.AlertType.NONE,
+                Alert.AlertType.WARNING,
                 text,
                 ButtonType.CLOSE
         );
+        alert.initOwner(main.getPrimaryStage());
         alert.showAndWait();
     }
 }

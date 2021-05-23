@@ -45,6 +45,7 @@ public class Main extends Application {
         TariffPlanSmsHandy handy1 = new TariffPlanSmsHandy("456", provider1);
         TariffPlanSmsHandy handy2 = new TariffPlanSmsHandy("567", provider2);
         TariffPlanSmsHandy handy3 = new TariffPlanSmsHandy("678", provider3);
+        prepaidSmsHandyO.sendSms(prepaidSmsHandy1.getNumber(),"Test");
 
         smsHandyData.add(prepaidSmsHandyO);
         smsHandyData.add(prepaidSmsHandy1);

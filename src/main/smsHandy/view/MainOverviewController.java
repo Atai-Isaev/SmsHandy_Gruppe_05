@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.smsHandy.Main;
+import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
@@ -119,6 +120,41 @@ public class MainOverviewController {
             main.getProvidersData().add(tempProvider);
         }
     }
+
+
+    /**
+     * Called when the user clicks the new button. Opens a dialog to edit
+     * details for a new provider.
+     */
+    @FXML
+    private void handleshowMessagesForSmsHandy() {
+        SmsHandy selectedHandy = smsHandyTableView.getSelectionModel().getSelectedItem();
+        if (selectedHandy != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("view/MessagesOverview.fxml"));
+                AnchorPane page = loader.load();
+
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Messages of SmsHandy");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(this.main.getPrimaryStage());
+                dialogStage.setScene(new Scene(page));
+
+                MessagesOverviewController controller = loader.getController();
+                controller.setSelectedSmsHandy(selectedHandy);
+
+                controller.setMain(this.main);
+                controller.setDialogStage(dialogStage);
+                dialogStage.showAndWait();
+            } catch (IOException | ProviderNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            alert("There is no selected SmsHandy! Please, select SmsHandy first.");
+        }
+    }
+
 
     @FXML
     private void handleCreateOrEditSmsHandy() {

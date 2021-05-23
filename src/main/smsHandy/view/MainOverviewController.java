@@ -16,6 +16,7 @@ import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 public class MainOverviewController {
     @FXML
@@ -131,7 +132,7 @@ public class MainOverviewController {
     private void handleDeleteSmsHandy(){
         int selectedHandyIndex = smsHandyTableView.getSelectionModel().getSelectedIndex();
         if (selectedHandyIndex>=0){
-            smsHandyTableView.getItems().remove(selectedHandyIndex);
+            main.getSmsHandyData().remove(smsHandyTableView.getItems().get(selectedHandyIndex));
         }
         else{
             alert("Please select a SMS-Handy in the table.");
@@ -142,7 +143,9 @@ public class MainOverviewController {
     private void handleDeletePovider(){
         int selectedPoviderIndex = providerTableView.getSelectionModel().getSelectedIndex();
         if (selectedPoviderIndex>=0){
-            providerTableView.getItems().remove(selectedPoviderIndex);
+            Provider providerInProviderTV = providerTableView.getItems().get(selectedPoviderIndex);
+            smsHandyTableView.getItems().removeIf(smsHandy -> smsHandy.getProvider().getName().equals(providerInProviderTV.getName()));
+            main.getProvidersData().remove(providerInProviderTV);
         }
         else{
             alert("Please select a Provider in the table.");

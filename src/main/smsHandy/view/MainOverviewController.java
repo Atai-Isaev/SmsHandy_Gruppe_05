@@ -75,13 +75,36 @@ public class MainOverviewController {
             });
             return row;
         });
+
+        providerTableView.setRowFactory(providerTableView -> {
+            final TableRow<Provider> row = new TableRow<>();
+            row.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                final int index = row.getIndex();
+                if (index >= 0 && index < providerTableView.getItems().size() && providerTableView.getSelectionModel().isSelected(index)  ) {
+                    providerTableView.getSelectionModel().clearSelection();
+                    showProvidersSmsHandy(null);
+                    event.consume();
+                }
+            });
+            return row;
+        });
+
+        providerTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showProvidersSmsHandy(newValue));
     }
 
     public void setMain(Main main) {
         this.main = main;
 
         providerTableView.setItems(main.getProvidersData());
-        smsHandyTableView.setItems(main.getSmsHandyData());
+    }
+
+    private void showProvidersSmsHandy(Provider provider){
+        if (provider != null){
+            smsHandyTableView.setItems(main.getSmsHandyData().filtered(smsHandy -> smsHandy.getProvider().getName().equals(provider.getName())));
+        }
+        else {
+            smsHandyTableView.setItems(null);
+        }
     }
 
     /**

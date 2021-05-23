@@ -32,7 +32,7 @@ public abstract class SmsHandy {
             this.received = new ArrayList<>();
             this.getProvider().register(this);
         } catch (NullPointerException e) {
-            throw  new ProviderNotFoundException("Provider can't be null");
+            throw new ProviderNotFoundException("Provider can't be null");
         }
 
 
@@ -51,7 +51,9 @@ public abstract class SmsHandy {
             message.setDate(new Date());
             message.setFrom(this.getNumber());
             message.setTo(to);
-            if (!provider.send(message))
+            if (provider.send(message))
+                this.sent.add(message);
+            else
                 throw new InvalidNumberException("Please choose a valid phone number!");
         } else
             throw new InvalidNumberException("You can not send sms to yourself!");
@@ -99,7 +101,7 @@ public abstract class SmsHandy {
      */
     public void receiveSms(Message message) {
 
-            this.received.add(message);
+        this.received.add(message);
     }
 
     /**
@@ -146,5 +148,11 @@ public abstract class SmsHandy {
             this.provider = provider;
     }
 
+    public List<Message> getSent() {
+        return sent;
+    }
 
+    public List<Message> getReceived() {
+        return received;
+    }
 }

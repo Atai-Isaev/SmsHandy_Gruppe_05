@@ -131,24 +131,24 @@ public class MainOverviewController {
         SmsHandy selectedHandy = smsHandyTableView.getSelectionModel().getSelectedItem();
         if (selectedHandy != null) {
             try {
-                showSmsHandyWindow(selectedHandy);
-//                FXMLLoader loader = new FXMLLoader();
-//                loader.setLocation(Main.class.getResource("view/MessagesOverview.fxml"));
-//                AnchorPane page = loader.load();
-//
-//                Stage dialogStage = new Stage();
-//                dialogStage.setTitle("Messages of SmsHandy");
-//                dialogStage.initModality(Modality.WINDOW_MODAL);
-//                dialogStage.initOwner(this.main.getPrimaryStage());
-//                dialogStage.setScene(new Scene(page));
-//
-//                MessagesOverviewController controller = loader.getController();
-//                controller.setSelectedSmsHandy(selectedHandy);
-//
-//                controller.setMain(this.main);
-//                controller.setDialogStage(dialogStage);
-//                dialogStage.showAndWait();
-            } catch (IOException e) {
+//                showSmsHandyWindow(selectedHandy);
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("view/MessagesOverview.fxml"));
+                AnchorPane page = loader.load();
+
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("Messages of SmsHandy");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(this.main.getPrimaryStage());
+                dialogStage.setScene(new Scene(page));
+
+                MessagesOverviewController controller = loader.getController();
+                controller.setSelectedSmsHandy(selectedHandy);
+
+                controller.setMain(this.main);
+                controller.setDialogStage(dialogStage);
+                dialogStage.showAndWait();
+            } catch (IOException | ProviderNotFoundException e) {
                 e.printStackTrace();
             }
         } else {
@@ -156,6 +156,7 @@ public class MainOverviewController {
         }
     }
 
+    // Second variant of sms handy
     private void showSmsHandyWindow(SmsHandy handy) throws IOException {
 
         SmsHandyController controller = new SmsHandyController();

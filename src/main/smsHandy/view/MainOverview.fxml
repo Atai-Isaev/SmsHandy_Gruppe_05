@@ -11,7 +11,7 @@
                 <ButtonBar buttonOrder="L_HE+UNYACBXIO_R" prefHeight="40.0" prefWidth="200.0">
                     <buttons>
                         <Button mnemonicParsing="false" onAction="#handleNewProvider" text="neuer Provider" ButtonBar.buttonData="LEFT" />
-                        <Button fx:id="createOrEditSmsHandyButton" mnemonicParsing="false" onAction="#handleCreateOrEditSmsHandy" prefHeight="25.0" prefWidth="166.0" text="Neues Handy anlegen" ButtonBar.buttonData="LEFT" />
+                        <Button fx:id="createOrEditSmsHandyButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleCreateOrEditSmsHandy" prefHeight="25.0" prefWidth="196.0" text="Neues Handy anlegen" ButtonBar.buttonData="LEFT" />
                         <Button mnemonicParsing="false" onAction="#handleDeleteSmsHandy" text="Handy löschen" ButtonBar.buttonData="RIGHT" />
                   <Button minWidth="48.0" mnemonicParsing="false" onAction="#handleDeletePovider" prefHeight="25.0" text="Provider löschen" />
                   <Button mnemonicParsing="false" onAction="#handleshowMessagesForSmsHandy" text="Zum SmsHandy" />

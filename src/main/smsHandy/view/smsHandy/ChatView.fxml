@@ -29,12 +29,12 @@
    <top>
       <HBox prefHeight="17.0" prefWidth="280.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#switchToContacts" text="&lt;">
+            <Button mnemonicParsing="false" onAction="#switchToContacts" prefHeight="25.0" prefWidth="39.0" text="&lt;">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Label prefHeight="31.0" prefWidth="28.0" text="###" />
+            <Label fx:id="chatHandyLabel" prefHeight="25.0" prefWidth="252.0" text="###" />
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" />

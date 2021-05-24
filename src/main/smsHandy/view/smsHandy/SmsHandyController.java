@@ -1,24 +1,16 @@
 package main.smsHandy.view.smsHandy;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import main.smsHandy.Main;
 import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
-
-import java.io.IOException;
 
 public class SmsHandyController {
 
@@ -29,7 +21,7 @@ public class SmsHandyController {
     private Main main;
     private SmsHandy handy;
 
-    private SmsHandy selectedContactHandy;
+    private SmsHandy chatHandy;
 
     private final ObservableList<SmsHandy> contacts = FXCollections.observableArrayList();
 
@@ -40,12 +32,29 @@ public class SmsHandyController {
     private Label balanceLabel;
 
     @FXML
+    private Label chatHandyLabel;
+
+    @FXML
     private void initialize() {
         contactsListView.setItems(contacts);
 
+        contactsListView.setCellFactory(param -> new ListCell<SmsHandy>() {
+            @Override
+            protected void updateItem(SmsHandy cellHandy, boolean empty) {
+                super.updateItem(cellHandy, empty);
+                if (empty || cellHandy == null) {
+                    setText(null);
+                } else {
+                    setText(cellHandy.getNumber() + " | " + cellHandy.getProvider().getName() + " | " + cellHandy.getClass().getSimpleName());
+                }
+            }
+        });
+
         contactsListView.setOnMouseClicked(event -> {
+//            contactsListView.getSelectionModel().setSelectionMode();
+            // select clicked contact item
             if (event.getClickCount() == 2) {
-                selectedContactHandy = contactsListView.getSelectionModel().getSelectedItem();
+                chatHandy = contactsListView.getSelectionModel().getSelectedItem();
                 switchToChat();
             }
         });
@@ -84,12 +93,12 @@ public class SmsHandyController {
     @FXML
     private void switchToChat() {
         stage.setScene(this.chatScene);
-        System.out.println(selectedContactHandy.getNumber());
     }
 
     @FXML
     private void switchToContacts() {
         stage.setScene(this.contactsScene);
+        chatHandyLabel.setText(chatHandy.getNumber() + "@" + chatHandy.getProvider().getName());
     }
 
     public void setContactsScene(Scene contactsScene) {

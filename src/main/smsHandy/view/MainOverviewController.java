@@ -15,9 +15,9 @@ import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
+import main.smsHandy.view.smsHandy.SmsHandyController;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 public class MainOverviewController {
     @FXML
@@ -131,6 +131,7 @@ public class MainOverviewController {
         SmsHandy selectedHandy = smsHandyTableView.getSelectionModel().getSelectedItem();
         if (selectedHandy != null) {
             try {
+//                showSmsHandyWindow(selectedHandy);
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(Main.class.getResource("view/MessagesOverview.fxml"));
                 AnchorPane page = loader.load();
@@ -153,6 +154,32 @@ public class MainOverviewController {
         } else {
             alert("There is no selected SmsHandy! Please, select SmsHandy first.");
         }
+    }
+
+    // Second variant of sms handy
+    private void showSmsHandyWindow(SmsHandy handy) throws IOException {
+
+        SmsHandyController controller = new SmsHandyController();
+        FXMLLoader contactsLoader = new FXMLLoader(getClass().getResource("smsHandy/ContactsView.fxml"));
+        FXMLLoader chatLoader = new FXMLLoader(getClass().getResource("smsHandy/ChatView.fxml"));
+
+        contactsLoader.setController(controller);
+        chatLoader.setController(controller);
+
+        Scene scene = new Scene(contactsLoader.load());
+
+        Stage stage = new Stage();
+        stage.setTitle("HANDY - " + handy.getNumber());
+        stage.initOwner(this.main.getPrimaryStage());
+        stage.setScene(scene);
+        stage.show();
+
+        controller.setContactsScene(scene);
+        controller.setChatScene(new Scene(chatLoader.load()));
+        controller.setStage(stage);
+        controller.setHandy(handy);
+        controller.setMain(this.main);
+        controller.constructSmsHandyWindow();
     }
 
 

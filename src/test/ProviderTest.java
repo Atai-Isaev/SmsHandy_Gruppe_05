@@ -1,6 +1,7 @@
 package test;
 
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyHaveProviderException;
 import main.smsHandy.exception.SmsHandyNotFoundException;
 import main.smsHandy.model.*;
 import org.junit.jupiter.api.*;
@@ -28,7 +29,7 @@ public class ProviderTest {
     }
 
     @BeforeEach
-    public void init() throws ProviderNotFoundException {
+    public void init() throws ProviderNotFoundException, SmsHandyHaveProviderException {
         provider = new Provider();
         provider.setName("Telecom");
         provider2 = new Provider();

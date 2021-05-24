@@ -1,6 +1,7 @@
 package main.smsHandy.model;
 
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyHaveProviderException;
 import main.smsHandy.exception.SmsHandyNotFoundException;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class Provider {
      *
      * @param smsHandy - das neue Handy
      */
-    public void register(SmsHandy smsHandy) throws ProviderNotFoundException {
+    public void register(SmsHandy smsHandy) throws ProviderNotFoundException, SmsHandyHaveProviderException {
         try {
             if (!subscriber.containsKey(smsHandy.getNumber())){
                 if (smsHandy.getClass() == PrepaidSmsHandy.class && !credits.containsKey(smsHandy.getNumber())){
@@ -90,7 +91,8 @@ public class Provider {
                 }
             }
             else {
-                System.out.println("Diese Nummer ist bereits beim Provider "+this.getName()+" registriert ");
+                throw new SmsHandyHaveProviderException("Diese Nummer ist bereits bei einem anderen Provider registriert");
+//                System.out.println("Diese Nummer ist bereits beim Provider "+this.getName()+" registriert ");
             }
         }catch (NullPointerException e){
             throw new ProviderNotFoundException("Provider can't be null");

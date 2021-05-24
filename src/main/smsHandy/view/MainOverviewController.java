@@ -157,20 +157,21 @@ public class MainOverviewController {
 
 
     @FXML
-    private void handleCreateOrEditSmsHandy() {
+    private void handleCreateOrEditSmsHandy(){
         SmsHandy selectedHandy = smsHandyTableView.getSelectionModel().getSelectedItem();
-        if (selectedHandy == null) {
+        try {
+            if (selectedHandy == null) {
             if (main.getProvidersData().isEmpty()) {
                 alert("There is no providers to create an SmsHandy! Please, create a provider first.");
                 return;
             }
-            try {
+
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(Main.class.getResource("view/CreateSmsHandyDialog.fxml"));
                 AnchorPane page = loader.load();
 
                 Stage dialogStage = new Stage();
-                dialogStage.setTitle("Create New SmsHandy");
+                dialogStage.setTitle("Neues SmsHandy erstellen");
                 dialogStage.initModality(Modality.WINDOW_MODAL);
                 dialogStage.initOwner(this.main.getPrimaryStage());
                 dialogStage.setScene(new Scene(page));
@@ -179,11 +180,25 @@ public class MainOverviewController {
                 controller.setMain(this.main);
                 controller.setStage(dialogStage);
                 dialogStage.showAndWait();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+            } else {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("view/SmsHandyEditDialog.fxml"));
+                AnchorPane page = loader.load();
+
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("SmsHandy bearbeiten");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(this.main.getPrimaryStage());
+                dialogStage.setScene(new Scene(page));
+
+                SmsHandyEditDialogController controller = loader.getController();
+                controller.setMain(this.main, selectedHandy);
+                controller.setStage(dialogStage);
+                dialogStage.showAndWait();
             }
-        } else {
-            // edit selected sms handy
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -192,6 +207,7 @@ public class MainOverviewController {
         int selectedHandyIndex = smsHandyTableView.getSelectionModel().getSelectedIndex();
         if (selectedHandyIndex>=0){
             main.getSmsHandyData().remove(smsHandyTableView.getItems().get(selectedHandyIndex));
+
         }
         else{
             alert("Please select a SMS-Handy in the table.");

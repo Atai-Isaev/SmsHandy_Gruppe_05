@@ -1,6 +1,7 @@
 package test;
 
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyHaveProviderException;
 import main.smsHandy.model.PrepaidSmsHandy;
 import main.smsHandy.model.Provider;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,7 @@ public class PrepaidSmsHandyTest {
     private PrepaidSmsHandy prepaidSmsHandyO;
 
     @BeforeEach
-    public void init() throws ProviderNotFoundException {
+    public void init() throws ProviderNotFoundException, SmsHandyHaveProviderException {
         provider = new Provider();
         provider.setName("O!");
         prepaidSmsHandyO = new PrepaidSmsHandy("123", provider);

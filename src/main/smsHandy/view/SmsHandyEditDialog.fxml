@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="229.0" prefWidth="213.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.smsHandy.view.SmsHandyEditDialogController">
+    <children>
+        <VBox prefHeight="313.0" prefWidth="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Label text="Nummer" />
+                <TextField fx:id="smsHandyNumberTextField" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="270.0" promptText="###" style="-fx-background-color: #fff; -fx-border-style: solid; -fx-border-radius: 3; -fx-border-color: #C7C7C7;">
+                    <VBox.margin>
+                        <Insets bottom="12.0" />
+                    </VBox.margin></TextField>
+                <Label text="Art" />
+                <ChoiceBox fx:id="smsHandyTypeChoiceBox" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="273.0" style="-fx-background-color: #fff; -fx-border-style: solid; -fx-border-radius: 3; -fx-border-color: #C7C7C7;">
+                    <VBox.margin>
+                        <Insets bottom="12.0" />
+                    </VBox.margin>
+                </ChoiceBox>
+                <Label text="Provider" />
+                <ChoiceBox fx:id="smsHandyProviderChoiceBox" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="286.0" style="-fx-background-color: #fff; -fx-border-radius: 3; -fx-border-style: solid; -fx-border-color: #C7C7C7;">
+                    <VBox.margin>
+                        <Insets bottom="12.0" />
+                    </VBox.margin>
+                </ChoiceBox>
+                <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleEditSmsHandyButton" prefHeight="25.0" prefWidth="282.0" text="Datei bearbeiten" textAlignment="CENTER">
+                    <VBox.margin>
+                        <Insets top="12.0" />
+                    </VBox.margin></Button>
+            </children>
+            <padding>
+                <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+            </padding></VBox>
+    </children>
+</AnchorPane>

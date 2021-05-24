@@ -1,6 +1,7 @@
 package main.smsHandy.model;
 
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyHaveProviderException;
 
 /**
  * Klasse TariffPlanSmsHandy. Ein Vertragshandy, das über eine
@@ -21,7 +22,7 @@ public class TariffPlanSmsHandy extends SmsHandy {
      * @param number   die Handynummer
      * @param provider die Providerinstanz
      */
-    public TariffPlanSmsHandy(String number, Provider provider) throws ProviderNotFoundException {
+    public TariffPlanSmsHandy(String number, Provider provider) throws ProviderNotFoundException, SmsHandyHaveProviderException {
         super(number, provider);
         this.remainingFreeSms = 100;
     }

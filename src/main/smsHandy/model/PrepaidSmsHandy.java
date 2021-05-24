@@ -1,6 +1,7 @@
 package main.smsHandy.model;
 
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyHaveProviderException;
 
 /**
  * Klasse PrepaidSmsHandy. Ein Handy, das über ein beim
@@ -17,7 +18,7 @@ public class PrepaidSmsHandy extends SmsHandy {
      * @param number   die Handynummer
      * @param provider die Providerinstanz
      */
-    public PrepaidSmsHandy(String number, Provider provider) throws ProviderNotFoundException {
+    public PrepaidSmsHandy(String number, Provider provider) throws ProviderNotFoundException, SmsHandyHaveProviderException {
         super(number, provider);
         try {
             this.deposit(100);

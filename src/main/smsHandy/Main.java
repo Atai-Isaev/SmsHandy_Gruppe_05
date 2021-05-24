@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyHaveProviderException;
 import main.smsHandy.model.PrepaidSmsHandy;
 import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
@@ -25,7 +26,7 @@ public class Main extends Application {
     private ObservableList<Provider> providersData = FXCollections.observableArrayList();
     private ObservableList<SmsHandy> smsHandyData = FXCollections.observableArrayList();
 
-    public Main() throws ProviderNotFoundException {
+    public Main() throws ProviderNotFoundException, SmsHandyHaveProviderException {
         Provider provider1 = new Provider();
         Provider provider2 = new Provider();
         Provider provider3 = new Provider();
@@ -61,6 +62,10 @@ public class Main extends Application {
 
     public ObservableList<SmsHandy> getSmsHandyData() {
         return smsHandyData;
+    }
+
+    public int getIndexOfSmsHandy(SmsHandy smsHandy){
+        return smsHandyData.indexOf(smsHandy);
     }
 
     @Override

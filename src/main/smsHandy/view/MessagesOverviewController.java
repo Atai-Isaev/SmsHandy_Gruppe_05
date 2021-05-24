@@ -105,7 +105,11 @@ public class MessagesOverviewController {
         smsTextField.setPrefColumnCount(24);
         smsTextField.setPrefRowCount(3);
 
+        CheckBox isDirectCheckBox = new CheckBox();
+        isDirectCheckBox.setText("Direct Message");
+
         ObservableList<String> receivers = FXCollections.observableArrayList();
+        receivers.add("*101#");
         main.getSmsHandyData().forEach(handy -> {
             if (!handy.getNumber().equals(this.selectedSmsHandy.getNumber()))
                 receivers.add(handy.getNumber());
@@ -115,10 +119,12 @@ public class MessagesOverviewController {
         receiversChoiceBox.setItems(receivers);
 
         Button sendButton = new Button();
+        sendButton.setMinWidth(20);
         sendButton.setText("Send");
 
         HBox hBox = new HBox();
         hBox.setSpacing(10);
+        hBox.getChildren().add(isDirectCheckBox);
         hBox.getChildren().add(receiversChoiceBox);
         hBox.getChildren().add(sendButton);
 
@@ -129,12 +135,17 @@ public class MessagesOverviewController {
         vBox.getChildren().add(hBox);
 
         sendButton.setOnAction(event -> {
-            if (smsTextField.getText().isBlank()) {
+            if (smsTextField.getText().isBlank() && (receiversChoiceBox.getSelectionModel().getSelectedItem() != null
+                    && !receiversChoiceBox.getSelectionModel().getSelectedItem().equals("*101#"))) {
                 alert("Please, write a message!");
             } else if (receiversChoiceBox.getSelectionModel().getSelectedItem() == null) {
                 alert("Please, select a receiver!");
             } else {
-                if (sendMessage(receiversChoiceBox.getSelectionModel().getSelectedItem(), smsTextField.getText()))
+                if (sendMessage(
+                        receiversChoiceBox.getSelectionModel().getSelectedItem(),
+                        smsTextField.getText(),
+                        isDirectCheckBox.isSelected()
+                ))
                     alert("Your sms successfully sent!");
                 else alert("Error!");
                 stage.close();
@@ -148,9 +159,15 @@ public class MessagesOverviewController {
         stage.showAndWait();
     }
 
-    private boolean sendMessage(String to, String content) {
+    private boolean sendMessage(String to, String content, boolean direct) {
         try {
-            this.selectedSmsHandy.sendSms(to, content);
+            if (direct) {
+                this.main.getSmsHandyData().forEach(handy -> {
+                    if (handy.getNumber().equals(to)) {
+                        this.selectedSmsHandy.sendSmsDirect(handy, content);
+                    }
+                });
+            } else this.selectedSmsHandy.sendSms(to, content);
         } catch (ProviderNotFoundException e) {
             return false;
         }

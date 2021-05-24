@@ -76,11 +76,15 @@ public class MessagesOverviewController {
 
     public void setMain(Main main) throws ProviderNotFoundException {
         this.main = main;
+        updateMessages();
+//        receivedMessageTableView.setItems(sentMessageData);
+    }
+
+    private void updateMessages() {
         sentMessageData.addAll(selectedSmsHandy.getSent());
         sentMessageTableView.setItems(sentMessageData);
         receivedMessageData.addAll(selectedSmsHandy.getReceived());
         receivedMessageTableView.setItems(receivedMessageData);
-//        receivedMessageTableView.setItems(sentMessageData);
     }
 
     /**
@@ -140,14 +144,18 @@ public class MessagesOverviewController {
                 alert("Please, write a message!");
             } else if (receiversChoiceBox.getSelectionModel().getSelectedItem() == null) {
                 alert("Please, select a receiver!");
+            } else if (isDirectCheckBox.isSelected() && (receiversChoiceBox.getSelectionModel().getSelectedItem() != null
+                    && receiversChoiceBox.getSelectionModel().getSelectedItem().equals("*101#"))) {
+                alert("Cannot send sms direct to *101#!");
             } else {
                 if (sendMessage(
                         receiversChoiceBox.getSelectionModel().getSelectedItem(),
                         smsTextField.getText(),
                         isDirectCheckBox.isSelected()
-                ))
+                )) {
                     alert("Your sms successfully sent!");
-                else alert("Error!");
+                    updateMessages();
+                } else alert("Error!");
                 stage.close();
             }
         });

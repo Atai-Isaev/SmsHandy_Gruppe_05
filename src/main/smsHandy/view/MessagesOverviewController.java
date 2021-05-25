@@ -12,7 +12,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.smsHandy.Main;
+import main.smsHandy.exception.InvalidNumberException;
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyNotFoundException;
 import main.smsHandy.model.Message;
 import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
@@ -49,6 +51,12 @@ public class MessagesOverviewController {
 
     @FXML
     private TableColumn<Message, String> dateColumnInReceived;
+
+//    Send Sms Elements
+    @FXML private Label infoLabel;
+    @FXML private TextArea smsTextArea;
+    @FXML private TextField receiverTextField;
+    @FXML private CheckBox isDirectCheckBox;
 
     private Main main;
     private SmsHandy smsHandy;
@@ -92,92 +100,42 @@ public class MessagesOverviewController {
     }
 
     @FXML
-    private void handleSendMessageButton() {
-        Stage stage = new Stage();
-
-        TextArea smsTextField = new TextArea();
-        smsTextField.setPromptText("Message...");
-        smsTextField.setPrefColumnCount(24);
-        smsTextField.setPrefRowCount(3);
-
-        CheckBox isDirectCheckBox = new CheckBox();
-        isDirectCheckBox.setText("Direct Message");
-
-        ObservableList<String> receivers = FXCollections.observableArrayList();
-        receivers.add("*101#");
-        main.getSmsHandyData().forEach(handy -> {
-            if (!handy.getNumber().equals(this.selectedSmsHandy.getNumber()))
-                receivers.add(handy.getNumber());
-        });
-        ChoiceBox<String> receiversChoiceBox = new ChoiceBox<>();
-        receiversChoiceBox.setMinWidth(smsTextField.getMinWidth());
-        receiversChoiceBox.setItems(receivers);
-
-        Button sendButton = new Button();
-        sendButton.setMinWidth(20);
-        sendButton.setText("Send");
-
-        HBox hBox = new HBox();
-        hBox.setSpacing(10);
-        hBox.getChildren().add(isDirectCheckBox);
-        hBox.getChildren().add(receiversChoiceBox);
-        hBox.getChildren().add(sendButton);
-
-        VBox vBox = new VBox();
-        vBox.setPadding(new Insets(10));
-        vBox.setSpacing(10);
-        vBox.getChildren().add(smsTextField);
-        vBox.getChildren().add(hBox);
-
-        sendButton.setOnAction(event -> {
-            if (smsTextField.getText().isBlank() && (receiversChoiceBox.getSelectionModel().getSelectedItem() != null
-                    && !receiversChoiceBox.getSelectionModel().getSelectedItem().equals("*101#"))) {
-                alert("Please, write a message!");
-            } else if (receiversChoiceBox.getSelectionModel().getSelectedItem() == null) {
-                alert("Please, select a receiver!");
-            } else if (isDirectCheckBox.isSelected() && (receiversChoiceBox.getSelectionModel().getSelectedItem() != null
-                    && receiversChoiceBox.getSelectionModel().getSelectedItem().equals("*101#"))) {
-                alert("Cannot send sms direct to *101#!");
-            } else {
-                if (sendMessage(
-                        receiversChoiceBox.getSelectionModel().getSelectedItem(),
-                        smsTextField.getText(),
-                        isDirectCheckBox.isSelected()
-                )) {
-                    alert("Your sms successfully sent!");
-                } else alert("Error!");
-                stage.close();
+    private void handleSendSmsButtonClicked() {
+        String to = receiverTextField.getText();
+        String content = smsTextArea.getText();
+        boolean direct = isDirectCheckBox.isSelected();
+        if (to.isBlank()) {
+            infoLabel.setText("Give a receiver number first!");
+            return;
+        } else {
+            if (content.isBlank() && !to.equals("*101#")) {
+                infoLabel.setText("You cannot send empty message!");
+                return;
             }
-        });
-
-        stage.setTitle("Send Sms");
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(this.main.getPrimaryStage());
-        stage.setScene(new Scene(vBox));
-        stage.showAndWait();
-    }
-
-    private boolean sendMessage(String to, String content, boolean direct) {
-        try {
-            if (direct) {
-                this.main.getSmsHandyData().forEach(handy -> {
-                    if (handy.getNumber().equals(to)) {
-                        this.selectedSmsHandy.sendSmsDirect(handy, content);
-                    }
-                });
-            } else this.selectedSmsHandy.sendSms(to, content);
-        } catch (ProviderNotFoundException e) {
-            return false;
         }
-        return true;
+
+        try {
+            sendMessage(to, content, direct);
+
+            if (to.equals("*101#")) {
+                if (direct) infoLabel.setText("Direct message to *101# is redundant!");
+                else infoLabel.setText("Check received messages!");
+            }
+            else infoLabel.setText("Your message successfully sent to " + to + "!");
+        } catch (ProviderNotFoundException e) {
+            infoLabel.setText("Sorry, provider for this number not found!");
+        } catch (InvalidNumberException | SmsHandyNotFoundException e) {
+            infoLabel.setText("Sorry, this number is invalid!");
+        }
     }
 
-    private void alert(String text) {
-        Alert alert = new Alert(
-                Alert.AlertType.NONE,
-                text,
-                ButtonType.CLOSE
-        );
-        alert.showAndWait();
+    private void sendMessage(String to, String content, boolean direct) throws ProviderNotFoundException, InvalidNumberException, SmsHandyNotFoundException {
+        if (direct) {
+            this.main.getSmsHandyData().forEach(handy -> {
+                if (handy.getNumber().equals(to)) {
+                    this.selectedSmsHandy.sendSmsDirect(handy, content);
+                }
+            });
+        } else this.selectedSmsHandy.sendSms(to, content);
     }
 }

@@ -138,7 +138,6 @@ public class MainOverviewController {
 
                 Stage dialogStage = new Stage();
                 dialogStage.setTitle("Messages of SmsHandy");
-                dialogStage.initModality(Modality.WINDOW_MODAL);
                 dialogStage.initOwner(this.main.getPrimaryStage());
                 dialogStage.setScene(new Scene(page));
 

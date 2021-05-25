@@ -218,7 +218,15 @@ public class MainOverviewController {
     private void handleDeleteSmsHandy(){
         int selectedHandyIndex = smsHandyTableView.getSelectionModel().getSelectedIndex();
         if (selectedHandyIndex>=0){
-            main.getSmsHandyData().remove(smsHandyTableView.getItems().get(selectedHandyIndex));
+            SmsHandy selectedHandy = smsHandyTableView.getItems().get(selectedHandyIndex);
+            main.getSmsHandyData().remove(selectedHandy);
+            for (Provider provider: main.getProvidersData()) {
+                if (provider.getName().equals(selectedHandy.getProvider().getName())) {
+                    provider.getSubscriber().remove(selectedHandy.getNumber());
+                    provider.getCredits().remove(selectedHandy.getNumber());
+                    break;
+                }
+            }
         }
         else{
             alert("Please select a SMS-Handy in the table.");
@@ -230,7 +238,7 @@ public class MainOverviewController {
         int selectedPoviderIndex = providerTableView.getSelectionModel().getSelectedIndex();
         if (selectedPoviderIndex>=0){
             Provider providerInProviderTV = providerTableView.getItems().get(selectedPoviderIndex);
-            smsHandyTableView.getItems().removeIf(smsHandy -> smsHandy.getProvider().getName().equals(providerInProviderTV.getName()));
+            main.getSmsHandyData().removeIf(smsHandy -> smsHandy.getProvider().getName().equals(providerInProviderTV.getName()));
             main.getProvidersData().remove(providerInProviderTV);
         }
         else{

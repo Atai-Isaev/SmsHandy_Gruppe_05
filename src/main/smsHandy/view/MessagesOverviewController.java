@@ -55,8 +55,6 @@ public class MessagesOverviewController {
     private Stage dialogStage;
 
     private SmsHandy selectedSmsHandy;
-    private ObservableList<Message> sentMessageData = FXCollections.observableArrayList();
-    private ObservableList<Message> receivedMessageData = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller class. This method is automatically called
@@ -76,15 +74,8 @@ public class MessagesOverviewController {
 
     public void setMain(Main main) throws ProviderNotFoundException {
         this.main = main;
-        updateMessages();
-//        receivedMessageTableView.setItems(sentMessageData);
-    }
-
-    private void updateMessages() {
-        sentMessageData.addAll(selectedSmsHandy.getSent());
-        sentMessageTableView.setItems(sentMessageData);
-        receivedMessageData.addAll(selectedSmsHandy.getReceived());
-        receivedMessageTableView.setItems(receivedMessageData);
+        sentMessageTableView.setItems(selectedSmsHandy.getSent());
+        receivedMessageTableView.setItems(selectedSmsHandy.getReceived());
     }
 
     /**
@@ -154,7 +145,6 @@ public class MessagesOverviewController {
                         isDirectCheckBox.isSelected()
                 )) {
                     alert("Your sms successfully sent!");
-                    updateMessages();
                 } else alert("Error!");
                 stage.close();
             }

@@ -44,7 +44,12 @@ public class Provider {
 
                 if (message.getTo().equals("*101#")) {
                     Message tempMessage = new Message();
-                    tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom()));
+                    SmsHandy handy = senderProvider.getSubscriber().get(message.getFrom());
+                    if (handy instanceof TariffPlanSmsHandy) {
+                        tempMessage.setContent("Ihre Guthaben: " + ((TariffPlanSmsHandy) handy).getRemainingFreeSms());
+                    } else {
+                        tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom()));
+                    }
                     tempMessage.setFrom(this.getName());
                     tempMessage.setDate(new Date());
                     tempMessage.setTo(message.getFrom());

@@ -36,7 +36,12 @@ public class ProviderTest {
         provider2.setName("Vodafone");
         prepaid = new PrepaidSmsHandy("015257000263",provider);
         tariffPlan = new TariffPlanSmsHandy("015250007245",provider);
+    }
 
+    @AfterEach
+    public void after(){
+        Provider.providersList.remove(provider2);
+        Provider.providersList.remove(provider);
     }
 
     @AfterAll

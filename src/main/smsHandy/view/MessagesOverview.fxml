@@ -70,7 +70,7 @@
                            <children>
                               <TextField fx:id="receiverTextField" promptText="###" />
                               <CheckBox fx:id="isDirectCheckBox" mnemonicParsing="false" text="IS DIRECT?" />
-                              <Button mnemonicParsing="false" onAction="#handleSendSmsButtonClicked" prefHeight="25.0" prefWidth="120.0" text="SEND SMS" />
+                              <Button fx:id="sendSmsButton" mnemonicParsing="false" onAction="#handleSendSmsButtonClicked" prefHeight="25.0" prefWidth="120.0" text="SEND SMS" />
                            </children>
                         </VBox>
                      </children>

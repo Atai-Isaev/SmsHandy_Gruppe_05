@@ -194,6 +194,7 @@ public class MessagesOverviewController {
         try {
             int guthaben = Integer.parseInt(aufladenBetrag.getText());
             selectedSmsHandy.getProvider().deposit(selectedSmsHandy.getNumber(), guthaben);
+            main.getSmsHandyData().set(main.getIndexOfSmsHandy(selectedSmsHandy), selectedSmsHandy);
             alert("✓ Der Betragaufladung erfolgt");
         } catch (NumberFormatException e) {
             alert("✕ Bitte die Zahlen eingeben");

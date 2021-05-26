@@ -13,8 +13,6 @@ public class CreateProviderDialogController {
 
 
     private Stage dialogStage;
-    private Provider provider;
-    private boolean okClicked = false;
     private Main main;
 
     /**
@@ -34,26 +32,10 @@ public class CreateProviderDialogController {
         this.dialogStage = dialogStage;
     }
 
-
-
-    /**
-     * Sets the provider to be edited in the dialog.
-     *
-     * @param provider
-     */
-    public void setProvider(Provider provider) {
-        this.provider = provider;
-        providerNameField.setText(provider.getName());
+    public void setMain(Main main) {
+        this.main = main;
     }
 
-    /**
-     * Returns true if the user clicked OK, false otherwise.
-     *
-     * @return
-     */
-    public boolean isOkClicked() {
-        return okClicked;
-    }
 
     /**
      * Called when the user clicks ok.
@@ -61,8 +43,9 @@ public class CreateProviderDialogController {
     @FXML
     private void handleOk() {
         if (isInputValid()) {
+            Provider provider = new Provider();
             provider.setName(providerNameField.getText());
-            okClicked = true;
+            main.getProvidersData().add(provider);
             dialogStage.close();
         }
     }
@@ -83,24 +66,26 @@ public class CreateProviderDialogController {
     private boolean isInputValid() {
         String errorMessage = "";
 
-        if (providerNameField.getText() == null || providerNameField.getText().length() == 0) {
-            errorMessage += "No valid provider name!\n";
+        if (providerNameField.getText().isBlank()) errorMessage = "Name kann nicht leer sein!";
+        else {
+            for (Provider p : Provider.providersList) {
+                if (p.getName() !=null && p.getName().equals(providerNameField.getText())) {
+                    errorMessage = "Dieser Name ist besetzt";
+                    break;
+                }
+            }
         }
-
-
         if (errorMessage.length() == 0) {
             return true;
         } else {
             // Show the error message.
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(dialogStage);
-            alert.setTitle("Invalid Fields");
-            alert.setHeaderText("Please correct invalid fields");
+            alert.setTitle("Eingabe Fehler");
             alert.setContentText(errorMessage);
-
             alert.showAndWait();
-
             return false;
         }
     }
+
 }

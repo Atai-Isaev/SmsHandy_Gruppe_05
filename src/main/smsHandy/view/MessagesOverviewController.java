@@ -22,10 +22,9 @@ import main.smsHandy.Main;
 import main.smsHandy.exception.InvalidNumberException;
 import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.exception.SmsHandyNotFoundException;
-import main.smsHandy.model.Message;
-import main.smsHandy.model.Provider;
-import main.smsHandy.model.SmsHandy;
+import main.smsHandy.model.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -39,11 +38,6 @@ public class MessagesOverviewController {
     @FXML
     private TableView<Message> sentMessageTableView;
 
-    @FXML
-    private Tab receivedTab;
-
-    @FXML
-    private Tab sentTab;
     @FXML
     private TableColumn<Message, String> fromColumnInReceived;
 
@@ -62,6 +56,10 @@ public class MessagesOverviewController {
     @FXML
     private TableColumn<Message, String> dateColumnInReceived;
 
+    //Guthabenaufladung Eleements
+    @FXML
+    private TextField aufladenBetrag;
+
     //    Send Sms Elements
     @FXML
     private Label infoLabel;
@@ -73,6 +71,9 @@ public class MessagesOverviewController {
     private CheckBox isDirectCheckBox;
     @FXML
     private Button sendSmsButton;
+
+    @FXML
+    private Label numberLabel;
 
     private Main main;
     private SmsHandy smsHandy;
@@ -93,7 +94,8 @@ public class MessagesOverviewController {
         contentColumnInReceived.setCellValueFactory(new PropertyValueFactory<>("Content"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("Date"));
         dateColumnInReceived.setCellValueFactory(new PropertyValueFactory<>("Date"));
-
+        sentMessageTableView.setPlaceholder(new Label("Keine gesendeten Nachrichten"));
+        receivedMessageTableView.setPlaceholder(new Label("Keine empfangenen Nachrichten"));
     }
 
     public void setMain(Main main) throws ProviderNotFoundException {
@@ -113,6 +115,7 @@ public class MessagesOverviewController {
 
     public void setSelectedSmsHandy(SmsHandy selectedSmsHandy) {
         this.selectedSmsHandy = selectedSmsHandy;
+        numberLabel.setText(selectedSmsHandy.getNumber()+" | "+selectedSmsHandy.getClass().getSimpleName()+" | "+selectedSmsHandy.getProvider().getName());
     }
 
     @FXML
@@ -121,11 +124,11 @@ public class MessagesOverviewController {
         String content = smsTextArea.getText();
         boolean direct = isDirectCheckBox.isSelected();
         if (to.isBlank()) {
-            infoLabel.setText("Give a receiver number first!");
+            infoLabel.setText("✕ Give a receiver number first!");
             return;
         } else {
             if (content.isBlank() && !to.equals("*101#")) {
-                infoLabel.setText("You cannot send empty message!");
+                infoLabel.setText("✕ You cannot send empty message!");
                 return;
             }
         }
@@ -136,13 +139,13 @@ public class MessagesOverviewController {
                 try {
                     Boolean result = sendMessage(to, content, direct);
                     if (to.equals("*101#")) {
-                        if (direct) return "Direct message to *101# is redundant!";
-                        else return "Check received messages!";
-                    } else return "Your message successfully sent to " + to + "!";
+                        if (direct) return "Direktnachricht an *101# ist überflüssig!";
+                        else return "✓ Empfangene Nachrichten ablesen!";
+                    } else return "✓ Ihre Nachricht wurde erfolgreich an " + to + " gesendet!";
                 } catch (ProviderNotFoundException e) {
-                    return "Sorry, provider for this number not found!";
+                    return "✕ Leider wurde der Provider für diese Nummer nicht gefunden!";
                 } catch (InvalidNumberException | SmsHandyNotFoundException e) {
-                    return "Sorry, this number is invalid!";
+                    return "✕ Leider ist diese Nummer ungültig!";
                 }
             }
         };
@@ -160,7 +163,7 @@ public class MessagesOverviewController {
             String info = task.getValue();
             infoLabel.setText(info);
             timelineLoading.stop();
-            sendSmsButton.setText("SEND SMS");
+            sendSmsButton.setText("SMS SENDEN");
         });
 
         new Thread(task).start();
@@ -184,5 +187,64 @@ public class MessagesOverviewController {
             });
         } else this.selectedSmsHandy.sendSms(to, content);
         return true;
+    }
+
+    @FXML
+    private void handleAufladenButton() {
+        try {
+            int guthaben = Integer.parseInt(aufladenBetrag.getText());
+            selectedSmsHandy.getProvider().deposit(selectedSmsHandy.getNumber(), guthaben);
+            alert("✓ Der Betragaufladung erfolgt");
+        } catch (NumberFormatException e) {
+            alert("✕ Bitte die Zahlen eingeben");
+        }
+    }
+
+    @FXML
+    private void handlePlusTenButton() {
+        setGuthaben("10");
+    }
+
+    @FXML
+    private void handlePlusTwentyButton() {
+        setGuthaben("20");
+    }
+
+    @FXML
+    private void handlePlusFiftyButton() {
+        setGuthaben("50");
+    }
+
+    @FXML
+    private void handlePlusHundredButton() {
+        setGuthaben("100");
+    }
+
+
+    private void setGuthaben(String s) {
+        if (!aufladenBetrag.getText().equals("")) {
+            try {
+                int count = Integer.parseInt(s) + Integer.parseInt(aufladenBetrag.getText());
+                aufladenBetrag.setText(String.valueOf(count));
+            } catch (NumberFormatException e) {
+                aufladenBetrag.setText(s);
+            }
+        } else {
+            aufladenBetrag.setText(s);
+        }
+    }
+
+    /**
+     * zeigt Fehler- oder Erfolgsfenster an
+     *
+     * @param text- oder Erfolmeldung
+     */
+    private void alert(String text) {
+        Alert alert = new Alert(
+                Alert.AlertType.NONE,
+                text,
+                ButtonType.CLOSE
+        );
+        alert.showAndWait();
     }
 }

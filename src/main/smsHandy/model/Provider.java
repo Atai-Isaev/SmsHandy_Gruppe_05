@@ -47,9 +47,9 @@ public class Provider {
                     Message tempMessage = new Message();
                     SmsHandy handy = senderProvider.getSubscriber().get(message.getFrom());
                     if (handy instanceof TariffPlanSmsHandy) {
-                        tempMessage.setContent("Ihre Guthaben: " + ((TariffPlanSmsHandy) handy).getRemainingFreeSms());
+                        tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom())+" € und Sie haben "+((TariffPlanSmsHandy) handy).getRemainingFreeSms() + " freie SMS");
                     } else {
-                        tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom()));
+                        tempMessage.setContent("Ihre Guthaben: " + getCreditForSmsHandy(message.getFrom()) + " € ");
                     }
                     tempMessage.setFrom(this.getName());
                     tempMessage.setDate(new Date());
@@ -86,14 +86,9 @@ public class Provider {
      */
     public void register(SmsHandy smsHandy) throws ProviderNotFoundException, SmsHandyHaveProviderException {
         try {
-            if (!subscriber.containsKey(smsHandy.getNumber())){
-                if (smsHandy.getClass() == PrepaidSmsHandy.class && !credits.containsKey(smsHandy.getNumber())){
+            if (!subscriber.containsKey(smsHandy.getNumber()) && !credits.containsKey(smsHandy.getNumber())){
                     credits.put(smsHandy.getNumber(), 0);
                     subscriber.put(smsHandy.getNumber(), smsHandy);
-                }
-                else if (smsHandy.getClass() == TariffPlanSmsHandy.class) {
-                    subscriber.put(smsHandy.getNumber(), smsHandy);
-                }
             }
             else {
                 throw new SmsHandyHaveProviderException("Diese Nummer ist bereits bei einem anderen Provider registriert");
@@ -118,6 +113,14 @@ public class Provider {
         try {
             if(credits.containsKey(number)){
                 credits.put(number, credits.get(number) + amount);
+                if (amount < 0) return;
+                SmsHandy senderSmsHandyInThisProvider = subscriber.get(number);
+                Message tempMessage = new Message();
+                tempMessage.setContent("Ihr Guthaben wurde um "+ amount + "€ aufgeladen. ");
+                tempMessage.setFrom(this.getName());
+                tempMessage.setDate(new Date());
+                tempMessage.setTo(number);
+                senderSmsHandyInThisProvider.receiveSms(tempMessage);
             }
             else{
                 System.out.println("Diese Nummer ist nicht Prepaid");

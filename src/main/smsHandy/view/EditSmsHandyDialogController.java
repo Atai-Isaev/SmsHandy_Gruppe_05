@@ -83,7 +83,7 @@ public class EditSmsHandyDialogController {
                     new TariffPlanSmsHandy(number, provider);
 //            System.out.println(main.getIndexOfSmsHandy(editedSmsHandy));
             main.getSmsHandyData().set(main.getIndexOfSmsHandy(editedSmsHandy),handy);
-            alert("Phone successfully edited!");
+            alert("Sms-Handy erfolgreich bearbeitet!");
             stage.close();
         } catch (ProviderNotFoundException | SmsHandyHaveProviderException e) {
             alert(e.getMessage());
@@ -97,7 +97,7 @@ public class EditSmsHandyDialogController {
 
     /**
      * zeigt Fehler- oder Erfolgsfenster an
-     * @param Fehler- oder Erfolmeldung
+     * @param text- oder Erfolmeldung
      */
     private void alert(String text) {
         Alert alert = new Alert(
@@ -115,11 +115,11 @@ public class EditSmsHandyDialogController {
      */
     private String checkSmsHandyNumber(String number) {
         String message = "";
-        if (number.isBlank()) message = "Number cannot be empty!";
+        if (number.isBlank()) message = "Nummer kann nicht leer sein!";
         try {
             Integer.parseInt(number);
         } catch (NumberFormatException e) {
-            message = "Number should be of type INTEGER!";
+            message = "Zahl sollte vom Typ INTEGER sein!";
         }
         return message;
     }

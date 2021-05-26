@@ -5,72 +5,134 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.smsHandy.view.MessagesOverviewController">
+<AnchorPane prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.smsHandy.view.MessagesOverviewController">
    <children>
-      <BorderPane prefHeight="500.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane prefHeight="500.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <Label text="Main SmsHandy" BorderPane.alignment="CENTER">
+            <Label fx:id="numberLabel" text="Main SmsHandy" BorderPane.alignment="CENTER">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
          </top>
          <center>
-            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <TabPane prefHeight="200.0" prefWidth="400.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
               <tabs>
-                <Tab fx:id="sentTab" text="sent Messages">
+                <Tab fx:id="sentTab" text="gesendete Messages">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="400.0">
                            <children>
                               <TableView fx:id="sentMessageTableView" layoutX="50.0" layoutY="69.0" prefHeight="404.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
-                                  <TableColumn fx:id="toColumn" prefWidth="75.0" text="To" />
-                                  <TableColumn fx:id="contentColumn" prefWidth="75.0" text="Content" />
-                                    <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Date" />
+                                  <TableColumn fx:id="toColumn" prefWidth="108.0" text="Wem" />
+                                  <TableColumn fx:id="contentColumn" prefWidth="174.0" text="Nachricht" />
+                                    <TableColumn fx:id="dateColumn" prefWidth="117.0" text="Wann" />
                                 </columns>
                               </TableView>
                            </children>
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab fx:id="receivedTab" text="received Messages">
+                <Tab fx:id="receivedTab" text="Empfangene Messages">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="400.0">
                            <children>
-                              <TableView fx:id="receivedMessageTableView" layoutX="78.0" layoutY="62.0" prefHeight="404.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TableView fx:id="receivedMessageTableView" layoutX="78.0" layoutY="62.0" prefHeight="404.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columns>
-                                  <TableColumn fx:id="fromColumnInReceived" prefWidth="75.0" text="From" />
-                                  <TableColumn fx:id="contentColumnInReceived" prefWidth="75.0" text="Content" />
-                                    <TableColumn fx:id="dateColumnInReceived" prefWidth="75.0" text="Date" />
+                                  <TableColumn fx:id="fromColumnInReceived" prefWidth="117.0" text="Vom" />
+                                  <TableColumn fx:id="contentColumnInReceived" prefWidth="178.0" text="Nachricht" />
+                                    <TableColumn fx:id="dateColumnInReceived" prefWidth="104.0" text="Wann" />
                                 </columns>
                               </TableView>
                            </children>
                         </AnchorPane>
                   </content>
                 </Tab>
+                  <Tab fx:id="guthabenAufladenTab" text="Guthabenaufladung">
+                      <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="400.0">
+                              <children>
+                                  <VBox prefHeight="313.0" prefWidth="400.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <children>
+                                          <Label text="Geben Sie den gewünschten Aufladebetrag ein" textFill="#455e45" textOverrun="CENTER_ELLIPSIS">
+                                       <VBox.margin>
+                                          <Insets bottom="13.0" left="8.0" />
+                                       </VBox.margin>
+                                       <font>
+                                          <Font name="Bell MT Bold" size="18.0" />
+                                       </font></Label>
+                                          <ButtonBar buttonMinWidth="50.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="45.0" prefWidth="222.0">
+                                              <buttons>
+                                                  <Button minWidth="12.0" onAction="#handlePlusTenButton" prefHeight="25.0" prefWidth="10.0" text="+10" textFill="#55836e">
+                                             <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                             </font></Button>
+                                                  <Button onAction="#handlePlusTwentyButton" prefWidth="10.0" text="+20" textFill="#55836e">
+                                             <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                             </font></Button>
+                                                  <Button onAction="#handlePlusFiftyButton" prefWidth="10.0" text="+50" textFill="#55836e">
+                                             <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                             </font></Button>
+                                                  <Button onAction="#handlePlusHundredButton" prefWidth="10.0" text="+100" textFill="#55836e">
+                                             <font>
+                                                <Font name="Arial Bold" size="12.0" />
+                                             </font></Button>
+                                              </buttons>
+                                              <padding>
+                                                  <Insets right="20.0" top="10.0" />
+                                              </padding>
+                                       <VBox.margin>
+                                          <Insets left="37.0" />
+                                       </VBox.margin>
+                                          </ButtonBar>
+                                          <TextField fx:id="aufladenBetrag" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="45.0" prefWidth="220.0" promptText="Betrag" style="-fx-background-color: #fff; -fx-border-style: solid; -fx-border-radius: 3; -fx-border-color: #C7C7C7;">
+                                              <VBox.margin>
+                                                  <Insets bottom="12.0" left="60.0" top="1.0" />
+                                              </VBox.margin>
+                                                   <font>
+                                                      <Font name="Arial Bold" size="14.0" />
+                                                   </font>
+                                          </TextField>
+                                          <Button mnemonicParsing="false" onAction="#handleAufladenButton" prefHeight="25.0" prefWidth="100.0" text="Aufladen" textAlignment="CENTER" textFill="#476841">
+                                              <VBox.margin>
+                                                  <Insets left="126.0" top="61.0" />
+                                              </VBox.margin>
+                                       <font>
+                                          <Font name="Arial" size="13.0" />
+                                       </font></Button>
+                                      </children>
+                                      <padding>
+                                          <Insets bottom="30.0" left="12.0" right="12.0" top="32.0" />
+                                      </padding></VBox>
+                              </children>
+                          </AnchorPane>
+                      </content>
+                  </Tab>
               </tabs>
             </TabPane>
          </center>
          <bottom>
-            <VBox prefHeight="103.0" prefWidth="280.0" BorderPane.alignment="CENTER">
+            <VBox prefHeight="103.0" prefWidth="400.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="infoLabel" prefHeight="17.0" prefWidth="327.0" text="Send any message to *101# to get your balance!">
+                  <Label fx:id="infoLabel" prefHeight="17.0" prefWidth="400.0" text="Senden Sie eine Nachricht an *101#, um Ihr Guthaben zu erhalten!">
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </Label>
-                  <HBox prefHeight="80.0" prefWidth="280.0">
+                  <HBox prefHeight="80.0" prefWidth="400.0">
                      <children>
-                        <TextArea fx:id="smsTextArea" prefHeight="200.0" prefWidth="185.0" promptText="Your message ...">
+                        <TextArea fx:id="smsTextArea" prefHeight="200.0" prefWidth="255.0" promptText="Ihre Nachricht...">
                            <HBox.margin>
                               <Insets right="10.0" />
                            </HBox.margin>
                         </TextArea>
                         <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                            <children>
-                              <TextField fx:id="receiverTextField" promptText="###" />
-                              <CheckBox fx:id="isDirectCheckBox" mnemonicParsing="false" text="IS DIRECT?" />
-                              <Button fx:id="sendSmsButton" mnemonicParsing="false" onAction="#handleSendSmsButtonClicked" prefHeight="25.0" prefWidth="120.0" text="SEND SMS" />
+                              <TextField fx:id="receiverTextField" promptText="Nummer" />
+                              <CheckBox fx:id="isDirectCheckBox" mnemonicParsing="false" text="IST DIREKT?" />
+                              <Button fx:id="sendSmsButton" mnemonicParsing="false" onAction="#handleSendSmsButtonClicked" prefHeight="25.0" prefWidth="120.0" text="SMS SENDEN" />
                            </children>
                         </VBox>
                      </children>

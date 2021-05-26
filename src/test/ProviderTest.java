@@ -58,7 +58,7 @@ public class ProviderTest {
         Message message2 = new Message("Mein Deposit?",new Date(),prepaid.getNumber(),"*101#");
         assertTrue(provider.send(message2));
         prepaid.listReceived();
-        assertEquals("\r\n" + "Guten Tag!\r\n\r\nIhre Guthaben: 90\r\n",outContent.toString());
+        assertEquals("\r\n" + "Guten Tag!\r\n\r\nIhr Guthaben wurde um 100€ aufgeladen. \r\nIhre Guthaben: 90 € \r\n",outContent.toString());
 
         Message messageWithWrongReciever = new Message("Falsche Reciever", new Date(),prepaid.getNumber(),"wrong number");
         assertFalse(provider.send(messageWithWrongReciever));
@@ -69,7 +69,7 @@ public class ProviderTest {
 
     @Test
     @DisplayName("Test for providerList on the added provider")
-    public void providerListTest() throws ProviderNotFoundException{
+    public void providerListTest(){
         assertEquals(2,Provider.providersList.size());
         assertEquals(provider, Provider.providersList.get(0));
     }
@@ -77,13 +77,13 @@ public class ProviderTest {
     @Test
     @DisplayName("Test for all small Methods like register(), deposit(), " +
             "getCreditForSmsHandy() in Provider class")
-    public void allSmallMethodsTest() throws ProviderNotFoundException{
+    public void allSmallMethodsTest(){
         assertEquals(100,provider.getCredits().get(prepaid.getNumber()));
         assertEquals(prepaid,provider.getSubscriber().get(prepaid.getNumber()));
         provider.deposit(prepaid.getNumber(),30);
         assertEquals(130,provider.getCreditForSmsHandy(prepaid.getNumber()));
         assertEquals(tariffPlan,provider.getSubscriber().get(tariffPlan.getNumber()));
-        assertNull( provider.getCredits().get(tariffPlan.getNumber()));
+        assertEquals( 0,provider.getCredits().get(tariffPlan.getNumber()));
     }
 
 

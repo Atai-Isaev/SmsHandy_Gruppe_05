@@ -98,10 +98,8 @@ public class Main extends Application {
      * clicks OK, the changes are saved into the provided provider object and true
      * is returned.
      *
-     * @param provider the provider object to be edited
-     * @return true if the user clicked OK, false otherwise.
      */
-    public boolean showProviderEditDialog(Provider provider) {
+    public void showProviderEditDialog() {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
@@ -125,15 +123,13 @@ public class Main extends Application {
             // Set the provider into the controller.
             CreateProviderDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setProvider(provider);
+            controller.setMain(this);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
-            return controller.isOkClicked();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
     }
 

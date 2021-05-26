@@ -59,10 +59,10 @@ public class MainOverviewController {
         smsHandyGuthabenColumn.setCellValueFactory(param -> {
             SmsHandy handy = param.getValue();
             if (handy instanceof TariffPlanSmsHandy) {
-                return new SimpleStringProperty(((TariffPlanSmsHandy) handy).getRemainingFreeSms() + " sms");
+                return new SimpleStringProperty(((TariffPlanSmsHandy) handy).getRemainingFreeSms() + " SMS");
             }
             int credits = handy.getProvider().getCreditForSmsHandy(handy.getNumber());
-            return new SimpleStringProperty(credits + " euro");
+            return new SimpleStringProperty(credits + " €");
         });
 
         smsHandyTableView.setRowFactory(tableView2 -> {
@@ -100,6 +100,9 @@ public class MainOverviewController {
             showProvidersSmsHandy(newValue);
             changeCreateOrEditSmsHandyButtonPlaceholder("Sms-Handy erstellen");
         });
+
+        smsHandyTableView.setPlaceholder(new Label("Provider nicht ausgewählt"));
+        providerTableView.setPlaceholder(new Label("Bitte, Provider erstellen"));
     }
 
     public void setMain(Main main) {
@@ -133,7 +136,7 @@ public class MainOverviewController {
                 AnchorPane page = loader.load();
 
                 Stage dialogStage = new Stage();
-                dialogStage.setTitle("Messages of SmsHandy");
+                dialogStage.setTitle(selectedHandy.getNumber()+"@"+selectedHandy.getClass().getSimpleName());
                 dialogStage.initOwner(this.main.getPrimaryStage());
                 dialogStage.setScene(new Scene(page));
 
@@ -147,7 +150,7 @@ public class MainOverviewController {
                 e.printStackTrace();
             }
         } else {
-            alert("There is no selected SmsHandy! Please, select SmsHandy first.");
+            alert("Es ist kein SmsHandy ausgewählt! Bitte wählen Sie zuerst SmsHandy aus.");
         }
     }
 
@@ -186,11 +189,7 @@ public class MainOverviewController {
         Provider selectedProvider = providerTableView.getSelectionModel().getSelectedItem();
         try {
             if (selectedProvider == null) {
-                Provider tempProvider = new Provider();
-                boolean okClicked = main.showProviderEditDialog(tempProvider);
-                if (okClicked) {
-                    main.getProvidersData().add(tempProvider);
-                }
+                main.showProviderEditDialog();
             } else {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(Main.class.getResource("view/EditProviderDialog.fxml"));
@@ -220,7 +219,7 @@ public class MainOverviewController {
         try {
             if (selectedHandy == null) {
             if (main.getProvidersData().isEmpty()) {
-                alert("There is no providers to create an SmsHandy! Please, create a provider first.");
+                alert("Es gibt keine Provider, um ein SmsHandy zu erstellen! Bitte erstellen Sie zuerst einen Provider.");
                 return;
             }
 
@@ -278,7 +277,7 @@ public class MainOverviewController {
             }
         }
         else{
-            alert("Please select a SMS-Handy in the table.");
+            alert("Bitte wählen Sie in der Tabelle ein SMS-Handy aus.");
         }
     }
 
@@ -292,7 +291,7 @@ public class MainOverviewController {
             providerTableView.getSelectionModel().clearSelection();
         }
         else{
-            alert("Please select a Provider in the table.");
+            alert("Bitte wählen Sie in der Tabelle einen Provider aus.");
         }
     }
 

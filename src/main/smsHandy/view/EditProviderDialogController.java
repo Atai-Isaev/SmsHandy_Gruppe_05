@@ -23,13 +23,12 @@ public class EditProviderDialogController {
     @FXML
     private void handleEditProviderButton() {
         String name = providerNameTextField.getText();
-        System.out.println("Button handled");
         if (checkProviderName(name).equals("")){
             editedProvider = Provider.providersList.get(Provider.providersList.indexOf(editedProvider));
             editedProvider.setName(name);
             Provider.providersList.set(Provider.providersList.indexOf(editedProvider),editedProvider);
             main.getProvidersData().set(Provider.providersList.indexOf(editedProvider),editedProvider);
-            alert("Provider successfully edited!");
+            alert("Provider erfolgreich bearbeitet!");
             stage.close();
         }else {
             alert(checkProviderName(name));
@@ -44,7 +43,7 @@ public class EditProviderDialogController {
 
     /**
      * zeigt Fehler- oder Erfolgsfenster an
-     * @param Fehler- oder Erfolmeldung
+     * @param text- oder Erfolmeldung
      */
     private void alert(String text) {
         Alert alert = new Alert(

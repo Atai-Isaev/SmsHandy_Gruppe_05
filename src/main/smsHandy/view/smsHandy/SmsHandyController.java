@@ -84,9 +84,9 @@ public class SmsHandyController {
     private void updateBalanceLabel() {
         String balance = "";
         if (handy instanceof TariffPlanSmsHandy)
-            balance = ((TariffPlanSmsHandy) handy).getRemainingFreeSms() + " sms";
+            balance = ((TariffPlanSmsHandy) handy).getRemainingFreeSms() + " SMS";
         else
-            balance = handy.getProvider().getCreditForSmsHandy(handy.getNumber()) + " euro";
+            balance = handy.getProvider().getCreditForSmsHandy(handy.getNumber()) + " €";
         balanceLabel.setText(balance);
     }
 

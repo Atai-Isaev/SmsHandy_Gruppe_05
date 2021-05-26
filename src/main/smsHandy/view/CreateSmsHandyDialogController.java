@@ -70,7 +70,7 @@ public class CreateSmsHandyDialogController {
             SmsHandy handy = (art == SmsHandyArt.PREPAID) ?
                     new PrepaidSmsHandy(number, provider) : new TariffPlanSmsHandy(number, provider);
             main.getSmsHandyData().add(handy);
-            alert("Phone successfully created!");
+            alert("Sms-Handy erfolgreich angelegt!");
             stage.close();
         } catch (ProviderNotFoundException | SmsHandyHaveProviderException e) {
             alert(e.getMessage());
@@ -93,11 +93,11 @@ public class CreateSmsHandyDialogController {
 
     private String checkSmsHandyNumber(String number) {
         String message = "";
-        if (number.isBlank()) message = "Number cannot be empty!";
+        if (number.isBlank()) message = "Nummer kann nicht leer sein!";
         try {
             Integer.parseInt(number);
         } catch (NumberFormatException e) {
-            message = "Number should be of type INTEGER!";
+            message = "Zahl sollte vom Typ INTEGER sein!";
         }
         return message;
     }

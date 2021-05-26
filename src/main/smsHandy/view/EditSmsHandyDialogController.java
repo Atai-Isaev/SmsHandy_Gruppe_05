@@ -1,6 +1,5 @@
 package main.smsHandy.view;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -17,7 +16,7 @@ import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
 
 
-public class SmsHandyEditDialogController {
+public class EditSmsHandyDialogController {
     private Main main;
     private Stage stage;
     private SmsHandy editedSmsHandy;
@@ -25,7 +24,7 @@ public class SmsHandyEditDialogController {
     @FXML
     private TextField smsHandyNumberTextField;
     @FXML
-    private ChoiceBox<SmsHandyEditDialogController.SmsHandyArt> smsHandyTypeChoiceBox;
+    private ChoiceBox<EditSmsHandyDialogController.SmsHandyArt> smsHandyTypeChoiceBox;
     @FXML
     private ChoiceBox<Provider> smsHandyProviderChoiceBox;
 
@@ -33,12 +32,12 @@ public class SmsHandyEditDialogController {
     private void initialize() {
         smsHandyTypeChoiceBox.setConverter(new StringConverter<>() {
             @Override
-            public String toString(SmsHandyEditDialogController.SmsHandyArt object) {
-                return object == SmsHandyEditDialogController.SmsHandyArt.PREPAID ? "Prepaid Sms Handy" : "Tariff Plan Sms Handy";
+            public String toString(EditSmsHandyDialogController.SmsHandyArt object) {
+                return object == EditSmsHandyDialogController.SmsHandyArt.PREPAID ? "Prepaid Sms Handy" : "Tariff Plan Sms Handy";
             }
 
             @Override
-            public SmsHandyEditDialogController.SmsHandyArt fromString(String string) {
+            public EditSmsHandyDialogController.SmsHandyArt fromString(String string) {
                 return null;
             }
         });
@@ -58,7 +57,7 @@ public class SmsHandyEditDialogController {
 
     @FXML
     private void handleEditSmsHandyButton() {
-        SmsHandyEditDialogController.SmsHandyArt art = smsHandyTypeChoiceBox.getValue();
+        EditSmsHandyDialogController.SmsHandyArt art = smsHandyTypeChoiceBox.getValue();
         Provider provider = smsHandyProviderChoiceBox.getValue();
         String number = smsHandyNumberTextField.getText();
 
@@ -78,7 +77,7 @@ public class SmsHandyEditDialogController {
                     .getProvider()
                     .getCredits()
                     .remove(editedSmsHandy.getNumber());
-            SmsHandy handy = (art == SmsHandyEditDialogController.SmsHandyArt.PREPAID) ?
+            SmsHandy handy = (art == EditSmsHandyDialogController.SmsHandyArt.PREPAID) ?
                     new PrepaidSmsHandy(number, provider)
                     :
                     new TariffPlanSmsHandy(number, provider);
@@ -91,6 +90,15 @@ public class SmsHandyEditDialogController {
         }
     }
 
+    @FXML
+    private void handleCancelButton(){
+        stage.close();
+    }
+
+    /**
+     * zeigt Fehler- oder Erfolgsfenster an
+     * @param Fehler- oder Erfolmeldung
+     */
     private void alert(String text) {
         Alert alert = new Alert(
                 Alert.AlertType.NONE,
@@ -100,6 +108,11 @@ public class SmsHandyEditDialogController {
         alert.showAndWait();
     }
 
+    /**
+     * prueft den Sms-Handy Nummer auf Eindeutigkeit
+     * @param number Nummer von Sms-Handy
+     * @return liefert eine Fehlermeldung
+     */
     private String checkSmsHandyNumber(String number) {
         String message = "";
         if (number.isBlank()) message = "Number cannot be empty!";
@@ -111,14 +124,19 @@ public class SmsHandyEditDialogController {
         return message;
     }
 
+    /**
+     * lädt die Klasse mit Daten und dem ausgewählten Sms-Handy in den Controller
+     * @param main Klasse mit Daten
+     * @param smsHandy ausgewähltete Sms-Handy
+     */
     public void setMain(Main main, SmsHandy smsHandy) {
         this.main = main;
         this.editedSmsHandy = smsHandy;
 
         smsHandyNumberTextField.setText(smsHandy.getNumber());
 
-        smsHandyTypeChoiceBox.getItems().add(SmsHandyEditDialogController.SmsHandyArt.PREPAID);
-        smsHandyTypeChoiceBox.getItems().add(SmsHandyEditDialogController.SmsHandyArt.TARIFF_PLAN);
+        smsHandyTypeChoiceBox.getItems().add(EditSmsHandyDialogController.SmsHandyArt.PREPAID);
+        smsHandyTypeChoiceBox.getItems().add(EditSmsHandyDialogController.SmsHandyArt.TARIFF_PLAN);
         smsHandyTypeChoiceBox.setValue(smsHandy instanceof TariffPlanSmsHandy ?
                 SmsHandyArt.TARIFF_PLAN : SmsHandyArt.PREPAID);
 

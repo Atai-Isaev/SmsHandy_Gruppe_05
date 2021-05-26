@@ -77,6 +77,11 @@ public class CreateSmsHandyDialogController {
         }
     }
 
+    @FXML
+    private void handleCancelButton(){
+        stage.close();
+    }
+
     private void alert(String text) {
         Alert alert = new Alert(
                 Alert.AlertType.NONE,

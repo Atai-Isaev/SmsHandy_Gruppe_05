@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="229.0" prefWidth="213.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.smsHandy.view.CreateSmsHandyDialogController">
+<AnchorPane prefHeight="239.0" prefWidth="213.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.smsHandy.view.CreateSmsHandyDialogController">
    <children>
       <VBox prefHeight="313.0" prefWidth="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -28,6 +28,10 @@
             <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCreateSmsHandyButton" prefHeight="25.0" prefWidth="282.0" text="Neues Handy anlegen" textAlignment="CENTER">
                <VBox.margin>
                   <Insets top="12.0" />
+               </VBox.margin></Button>
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCancelButton" prefHeight="25.0" prefWidth="282.0" text="Abbrechen" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets top="10.0" />
                </VBox.margin></Button>
          </children>
          <padding>

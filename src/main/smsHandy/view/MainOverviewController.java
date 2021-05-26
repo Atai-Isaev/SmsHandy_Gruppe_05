@@ -41,6 +41,9 @@ public class MainOverviewController {
     @FXML
     private Button createOrEditSmsHandyButton;
 
+    @FXML
+    private Button createOrEditProviderButton;
+
     private Main main;
 
     @FXML
@@ -68,10 +71,10 @@ public class MainOverviewController {
                 final int index = row.getIndex();
                 if (index >= 0 && index < smsHandyTableView.getItems().size() && smsHandyTableView.getSelectionModel().isSelected(index)  ) {
                     smsHandyTableView.getSelectionModel().clearSelection();
-                    changeCreateOrEditSmsHandyButtonPlaceholder("Neues Handy anlegen");
+                    changeCreateOrEditSmsHandyButtonPlaceholder("Sms-Handy erstellen");
                     event.consume();
                 } else {
-                    changeCreateOrEditSmsHandyButtonPlaceholder("Ausgewähltes Handy bearbeiten");
+                    changeCreateOrEditSmsHandyButtonPlaceholder("Sms-Handy bearbeiten");
                 }
             });
             return row;
@@ -84,7 +87,10 @@ public class MainOverviewController {
                 if (index >= 0 && index < providerTableView.getItems().size() && providerTableView.getSelectionModel().isSelected(index)  ) {
                     providerTableView.getSelectionModel().clearSelection();
                     showProvidersSmsHandy(null);
+                    changeCreateOrEditProviderButtonPlaceholder("Provider erstellen");
                     event.consume();
+                } else {
+                    changeCreateOrEditProviderButtonPlaceholder("Provider bearbeiten");
                 }
             });
             return row;
@@ -92,7 +98,7 @@ public class MainOverviewController {
 
         providerTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             showProvidersSmsHandy(newValue);
-            changeCreateOrEditSmsHandyButtonPlaceholder("Neues Handy anlegen");
+            changeCreateOrEditSmsHandyButtonPlaceholder("Sms-Handy erstellen");
         });
     }
 
@@ -108,19 +114,6 @@ public class MainOverviewController {
         }
         else {
             smsHandyTableView.setItems(null);
-        }
-    }
-
-    /**
-     * Called when the user clicks the new button. Opens a dialog to edit
-     * details for a new provider.
-     */
-    @FXML
-    private void handleNewProvider() {
-        Provider tempProvider = new Provider();
-        boolean okClicked = main.showProviderEditDialog(tempProvider);
-        if (okClicked) {
-            main.getProvidersData().add(tempProvider);
         }
     }
 
@@ -184,6 +177,42 @@ public class MainOverviewController {
         controller.constructSmsHandyWindow();
     }
 
+    /**
+     * Called when the user clicks the new button. Opens a dialog to edit
+     * details for a new provider.
+     */
+    @FXML
+    private void handleCreateOrEditProvider() {
+        Provider selectedProvider = providerTableView.getSelectionModel().getSelectedItem();
+        try {
+            if (selectedProvider == null) {
+                Provider tempProvider = new Provider();
+                boolean okClicked = main.showProviderEditDialog(tempProvider);
+                if (okClicked) {
+                    main.getProvidersData().add(tempProvider);
+                }
+            } else {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(Main.class.getResource("view/EditProviderDialog.fxml"));
+                AnchorPane page = loader.load();
+
+                Stage dialogStage = new Stage();
+                dialogStage.setTitle("SmsHandy bearbeiten");
+                dialogStage.initModality(Modality.WINDOW_MODAL);
+                dialogStage.initOwner(this.main.getPrimaryStage());
+                dialogStage.setScene(new Scene(page));
+
+                EditProviderDialogController controller = loader.getController();
+                controller.setMain(this.main, selectedProvider);
+                controller.setStage(dialogStage);
+                dialogStage.showAndWait();
+            }
+        }catch (IOException e){
+            alert("Etwas ist schief gelaufen.");
+            e.printStackTrace();
+        }
+
+    }
 
     @FXML
     private void handleCreateOrEditSmsHandy(){
@@ -200,7 +229,7 @@ public class MainOverviewController {
                 AnchorPane page = loader.load();
 
                 Stage dialogStage = new Stage();
-                dialogStage.setTitle("Neues SmsHandy erstellen");
+                dialogStage.setTitle("SmsHandy erstellen");
                 dialogStage.initModality(Modality.WINDOW_MODAL);
                 dialogStage.initOwner(this.main.getPrimaryStage());
                 dialogStage.setScene(new Scene(page));
@@ -212,7 +241,7 @@ public class MainOverviewController {
 
             } else {
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(Main.class.getResource("view/SmsHandyEditDialog.fxml"));
+                loader.setLocation(Main.class.getResource("view/EditSmsHandyDialog.fxml"));
                 AnchorPane page = loader.load();
 
                 Stage dialogStage = new Stage();
@@ -221,12 +250,13 @@ public class MainOverviewController {
                 dialogStage.initOwner(this.main.getPrimaryStage());
                 dialogStage.setScene(new Scene(page));
 
-                SmsHandyEditDialogController controller = loader.getController();
+                EditSmsHandyDialogController controller = loader.getController();
                 controller.setMain(this.main, selectedHandy);
                 controller.setStage(dialogStage);
                 dialogStage.showAndWait();
             }
         } catch (IOException e) {
+            alert("Etwas ist schief gelaufen.");
             e.printStackTrace();
         }
     }
@@ -253,10 +283,10 @@ public class MainOverviewController {
     }
 
     @FXML
-    private void handleDeletePovider(){
-        int selectedPoviderIndex = providerTableView.getSelectionModel().getSelectedIndex();
-        if (selectedPoviderIndex>=0){
-            Provider providerInProviderTV = providerTableView.getItems().get(selectedPoviderIndex);
+    private void handleDeleteProvider(){
+        int selectedProviderIndex = providerTableView.getSelectionModel().getSelectedIndex();
+        if (selectedProviderIndex>=0){
+            Provider providerInProviderTV = providerTableView.getItems().get(selectedProviderIndex);
             main.getSmsHandyData().removeIf(smsHandy -> smsHandy.getProvider().getName().equals(providerInProviderTV.getName()));
             main.getProvidersData().remove(providerInProviderTV);
             providerTableView.getSelectionModel().clearSelection();
@@ -264,6 +294,10 @@ public class MainOverviewController {
         else{
             alert("Please select a Provider in the table.");
         }
+    }
+
+    private void changeCreateOrEditProviderButtonPlaceholder(String buttonPlaceholder) {
+        createOrEditProviderButton.setText(buttonPlaceholder);
     }
 
     private void changeCreateOrEditSmsHandyButtonPlaceholder(String buttonPlaceholder) {

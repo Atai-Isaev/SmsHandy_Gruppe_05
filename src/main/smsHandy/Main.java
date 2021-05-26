@@ -15,8 +15,8 @@ import main.smsHandy.model.PrepaidSmsHandy;
 import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
+import main.smsHandy.view.CreateProviderDialogController;
 import main.smsHandy.view.MainOverviewController;
-import main.smsHandy.view.ProviderEditDialogController;
 
 import java.io.IOException;
 
@@ -105,25 +105,25 @@ public class Main extends Application {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/ProviderEditDialog.fxml"));
+            loader.setLocation(Main.class.getResource("view/CreateProviderDialog.fxml"));
 //            Parent parent = loader.load();
 //            Scene scene=new Scene(parent);
 //            primaryStage.setScene(scene);
 //            primaryStage.show();
-//            ProviderEditDialogController providerEditDialogController = loader.getController();
+//            CreateProviderDialogController providerEditDialogController = loader.getController();
 //            providerEditDialogController.setDialogStage(this);
             AnchorPane page = (AnchorPane) loader.load();
 
             // Create the dialog Stage.
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Provider anlegen");
+            dialogStage.setTitle("Provider erstellen");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
             // Set the provider into the controller.
-            ProviderEditDialogController controller = loader.getController();
+            CreateProviderDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setProvider(provider);
 

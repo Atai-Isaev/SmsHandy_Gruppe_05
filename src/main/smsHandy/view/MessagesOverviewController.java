@@ -117,43 +117,24 @@ public class MessagesOverviewController {
             }
         }
 
-        Task<Boolean> task = new Task<Boolean>() {
-            @Override
-            public Boolean call() {
-                try {
-                    return sendMessage(to, content, direct);
-                } catch (ProviderNotFoundException | InterruptedException e) {
-                    return false;
-                }
-            }
-        };
-        task.setOnSucceeded(e -> {
-            Boolean result = task.getValue();
-            sendSmsButton.setSkin(new DefaultButtonSkin(sendSmsButton));
-        });
 
-       sendSmsButton.setSkin(new MyButtonSkin(sendSmsButton));
-        new Thread(task).start();
-//        try {
-//
-//            sendSmsButton.setSkin(new MyButtonSkin(sendSmsButton));
-////            TimeUnit.SECONDS.sleep(3);
-//            sendMessage(to, content, direct);
-//
-//            if (to.equals("*101#")) {
-//                if (direct) infoLabel.setText("Direct message to *101# is redundant!");
-//                else infoLabel.setText("Check received messages!");
-//            }
-//            else infoLabel.setText("Your message successfully sent to " + to + "!");
-//        } catch (ProviderNotFoundException e) {
-//            infoLabel.setText("Sorry, provider for this number not found!");
-//        } catch (InvalidNumberException | SmsHandyNotFoundException e) {
-//            infoLabel.setText("Sorry, this number is invalid!");
-//        }
+        try {
+
+            sendMessage(to, content, direct);
+
+            if (to.equals("*101#")) {
+                if (direct) infoLabel.setText("Direct message to *101# is redundant!");
+                else infoLabel.setText("Check received messages!");
+            }
+            else infoLabel.setText("Your message successfully sent to " + to + "!");
+        } catch (ProviderNotFoundException e) {
+            infoLabel.setText("Sorry, provider for this number not found!");
+        } catch (InvalidNumberException | SmsHandyNotFoundException e) {
+            infoLabel.setText("Sorry, this number is invalid!");
+        }
     }
 
-    private boolean sendMessage(String to, String content, boolean direct) throws ProviderNotFoundException, InvalidNumberException, SmsHandyNotFoundException, InterruptedException {
-       TimeUnit.SECONDS.sleep(5);
+    private boolean sendMessage(String to, String content, boolean direct) throws ProviderNotFoundException, InvalidNumberException, SmsHandyNotFoundException {
         if (direct) {
             this.main.getSmsHandyData().forEach(handy -> {
                 if (handy.getNumber().equals(to)) {

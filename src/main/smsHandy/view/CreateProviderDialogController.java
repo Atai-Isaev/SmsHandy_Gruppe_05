@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import main.smsHandy.Main;
 import main.smsHandy.model.Provider;
 
-public class ProviderEditDialogController {
+public class CreateProviderDialogController {
     @FXML
     private TextField providerNameField;
 

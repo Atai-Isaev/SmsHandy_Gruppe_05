@@ -15,16 +15,16 @@ import main.smsHandy.model.Provider;
 import main.smsHandy.model.SmsHandy;
 import main.smsHandy.model.TariffPlanSmsHandy;
 
-import java.util.Random;
 
-public class CreateSmsHandyDialogController {
+public class EditSmsHandyDialogController {
     private Main main;
     private Stage stage;
+    private SmsHandy editedSmsHandy;
 
     @FXML
     private TextField smsHandyNumberTextField;
     @FXML
-    private ChoiceBox<SmsHandyArt> smsHandyTypeChoiceBox;
+    private ChoiceBox<EditSmsHandyDialogController.SmsHandyArt> smsHandyTypeChoiceBox;
     @FXML
     private ChoiceBox<Provider> smsHandyProviderChoiceBox;
 
@@ -32,12 +32,12 @@ public class CreateSmsHandyDialogController {
     private void initialize() {
         smsHandyTypeChoiceBox.setConverter(new StringConverter<>() {
             @Override
-            public String toString(SmsHandyArt object) {
-                return object == SmsHandyArt.PREPAID ? "Prepaid Sms Handy" : "Tariff Plan Sms Handy";
+            public String toString(EditSmsHandyDialogController.SmsHandyArt object) {
+                return object == EditSmsHandyDialogController.SmsHandyArt.PREPAID ? "Prepaid Sms Handy" : "Tariff Plan Sms Handy";
             }
 
             @Override
-            public SmsHandyArt fromString(String string) {
+            public EditSmsHandyDialogController.SmsHandyArt fromString(String string) {
                 return null;
             }
         });
@@ -56,8 +56,8 @@ public class CreateSmsHandyDialogController {
     }
 
     @FXML
-    private void handleCreateSmsHandyButton() {
-        SmsHandyArt art = smsHandyTypeChoiceBox.getValue();
+    private void handleEditSmsHandyButton() {
+        EditSmsHandyDialogController.SmsHandyArt art = smsHandyTypeChoiceBox.getValue();
         Provider provider = smsHandyProviderChoiceBox.getValue();
         String number = smsHandyNumberTextField.getText();
 
@@ -67,10 +67,23 @@ public class CreateSmsHandyDialogController {
         }
 
         try {
-            SmsHandy handy = (art == SmsHandyArt.PREPAID) ?
-                    new PrepaidSmsHandy(number, provider) : new TariffPlanSmsHandy(number, provider);
-            main.getSmsHandyData().add(handy);
-            alert("Phone successfully created!");
+            main.getSmsHandyData()
+                    .get(main.getIndexOfSmsHandy(editedSmsHandy))
+                    .getProvider()
+                    .getSubscriber()
+                    .remove(editedSmsHandy.getNumber());
+            main.getSmsHandyData()
+                    .get(main.getIndexOfSmsHandy(editedSmsHandy))
+                    .getProvider()
+                    .getCredits()
+                    .remove(editedSmsHandy.getNumber());
+            SmsHandy handy = (art == EditSmsHandyDialogController.SmsHandyArt.PREPAID) ?
+                    new PrepaidSmsHandy(number, provider)
+                    :
+                    new TariffPlanSmsHandy(number, provider);
+//            System.out.println(main.getIndexOfSmsHandy(editedSmsHandy));
+            main.getSmsHandyData().set(main.getIndexOfSmsHandy(editedSmsHandy),handy);
+            alert("Phone successfully edited!");
             stage.close();
         } catch (ProviderNotFoundException | SmsHandyHaveProviderException e) {
             alert(e.getMessage());
@@ -82,6 +95,10 @@ public class CreateSmsHandyDialogController {
         stage.close();
     }
 
+    /**
+     * zeigt Fehler- oder Erfolgsfenster an
+     * @param Fehler- oder Erfolmeldung
+     */
     private void alert(String text) {
         Alert alert = new Alert(
                 Alert.AlertType.NONE,
@@ -91,6 +108,11 @@ public class CreateSmsHandyDialogController {
         alert.showAndWait();
     }
 
+    /**
+     * prueft den Sms-Handy Nummer auf Eindeutigkeit
+     * @param number Nummer von Sms-Handy
+     * @return liefert eine Fehlermeldung
+     */
     private String checkSmsHandyNumber(String number) {
         String message = "";
         if (number.isBlank()) message = "Number cannot be empty!";
@@ -102,33 +124,24 @@ public class CreateSmsHandyDialogController {
         return message;
     }
 
-    private String generateSmsHandyNumber() {
-        String number = "";
-        boolean exists = false;
-        Random random = new Random();
-        do {
-            number = String.valueOf(random.nextInt(10000) + 100);
-            for (SmsHandy smsHandy : main.getSmsHandyData()) {
-                if (smsHandy.getNumber().equals(number)) {
-                    exists = true;
-                    break;
-                }
-            }
-        } while (exists);
-        return number;
-    }
-
-    public void setMain(Main main) {
+    /**
+     * lädt die Klasse mit Daten und dem ausgewählten Sms-Handy in den Controller
+     * @param main Klasse mit Daten
+     * @param smsHandy ausgewähltete Sms-Handy
+     */
+    public void setMain(Main main, SmsHandy smsHandy) {
         this.main = main;
+        this.editedSmsHandy = smsHandy;
 
-        smsHandyNumberTextField.setText(generateSmsHandyNumber());
+        smsHandyNumberTextField.setText(smsHandy.getNumber());
 
-        smsHandyTypeChoiceBox.getItems().add(SmsHandyArt.PREPAID);
-        smsHandyTypeChoiceBox.getItems().add(SmsHandyArt.TARIFF_PLAN);
-        smsHandyTypeChoiceBox.setValue(smsHandyTypeChoiceBox.getItems().get(0));
+        smsHandyTypeChoiceBox.getItems().add(EditSmsHandyDialogController.SmsHandyArt.PREPAID);
+        smsHandyTypeChoiceBox.getItems().add(EditSmsHandyDialogController.SmsHandyArt.TARIFF_PLAN);
+        smsHandyTypeChoiceBox.setValue(smsHandy instanceof TariffPlanSmsHandy ?
+                SmsHandyArt.TARIFF_PLAN : SmsHandyArt.PREPAID);
 
         main.getProvidersData().forEach(provider -> smsHandyProviderChoiceBox.getItems().add(provider));
-        smsHandyProviderChoiceBox.setValue(smsHandyProviderChoiceBox.getItems().get(0));
+        smsHandyProviderChoiceBox.setValue(smsHandy.getProvider());
     }
 
     public void setStage(Stage stage) {

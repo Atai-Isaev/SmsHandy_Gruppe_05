@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import main.smsHandy.exception.InvalidNumberException;
 import main.smsHandy.exception.ProviderNotFoundException;
+import main.smsHandy.exception.SmsHandyHaveProviderException;
 import main.smsHandy.exception.SmsHandyNotFoundException;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public abstract class SmsHandy {
      * @param number   - die Handynummer
      * @param provider - die Providerinstanz
      */
-    public SmsHandy(String number, Provider provider) throws ProviderNotFoundException {
+    public SmsHandy(String number, Provider provider) throws ProviderNotFoundException, SmsHandyHaveProviderException {
         try {
             this.number = number;
             this.provider = provider;

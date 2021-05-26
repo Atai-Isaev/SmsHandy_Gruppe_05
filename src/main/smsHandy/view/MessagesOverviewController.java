@@ -2,6 +2,7 @@ package main.smsHandy.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -21,6 +22,7 @@ import main.smsHandy.model.SmsHandy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MessagesOverviewController {
     @FXML
@@ -57,6 +59,7 @@ public class MessagesOverviewController {
     @FXML private TextArea smsTextArea;
     @FXML private TextField receiverTextField;
     @FXML private CheckBox isDirectCheckBox;
+    @FXML private Button sendSmsButton;
 
     private Main main;
     private SmsHandy smsHandy;
@@ -114,22 +117,43 @@ public class MessagesOverviewController {
             }
         }
 
-        try {
-            sendMessage(to, content, direct);
-
-            if (to.equals("*101#")) {
-                if (direct) infoLabel.setText("Direct message to *101# is redundant!");
-                else infoLabel.setText("Check received messages!");
+        Task<Boolean> task = new Task<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    return sendMessage(to, content, direct);
+                } catch (ProviderNotFoundException | InterruptedException e) {
+                    return false;
+                }
             }
-            else infoLabel.setText("Your message successfully sent to " + to + "!");
-        } catch (ProviderNotFoundException e) {
-            infoLabel.setText("Sorry, provider for this number not found!");
-        } catch (InvalidNumberException | SmsHandyNotFoundException e) {
-            infoLabel.setText("Sorry, this number is invalid!");
-        }
+        };
+        task.setOnSucceeded(e -> {
+            Boolean result = task.getValue();
+            sendSmsButton.setSkin(new DefaultButtonSkin(sendSmsButton));
+        });
+
+       sendSmsButton.setSkin(new MyButtonSkin(sendSmsButton));
+        new Thread(task).start();
+//        try {
+//
+//            sendSmsButton.setSkin(new MyButtonSkin(sendSmsButton));
+////            TimeUnit.SECONDS.sleep(3);
+//            sendMessage(to, content, direct);
+//
+//            if (to.equals("*101#")) {
+//                if (direct) infoLabel.setText("Direct message to *101# is redundant!");
+//                else infoLabel.setText("Check received messages!");
+//            }
+//            else infoLabel.setText("Your message successfully sent to " + to + "!");
+//        } catch (ProviderNotFoundException e) {
+//            infoLabel.setText("Sorry, provider for this number not found!");
+//        } catch (InvalidNumberException | SmsHandyNotFoundException e) {
+//            infoLabel.setText("Sorry, this number is invalid!");
+//        }
     }
 
-    private void sendMessage(String to, String content, boolean direct) throws ProviderNotFoundException, InvalidNumberException, SmsHandyNotFoundException {
+    private boolean sendMessage(String to, String content, boolean direct) throws ProviderNotFoundException, InvalidNumberException, SmsHandyNotFoundException, InterruptedException {
+       TimeUnit.SECONDS.sleep(5);
         if (direct) {
             this.main.getSmsHandyData().forEach(handy -> {
                 if (handy.getNumber().equals(to)) {
@@ -137,5 +161,6 @@ public class MessagesOverviewController {
                 }
             });
         } else this.selectedSmsHandy.sendSms(to, content);
+        return true;
     }
 }

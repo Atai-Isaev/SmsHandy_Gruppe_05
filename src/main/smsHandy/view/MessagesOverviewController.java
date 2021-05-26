@@ -1,17 +1,23 @@
 package main.smsHandy.view;
 
+import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.skin.ButtonSkin;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import main.smsHandy.Main;
 import main.smsHandy.exception.InvalidNumberException;
 import main.smsHandy.exception.ProviderNotFoundException;
@@ -22,7 +28,9 @@ import main.smsHandy.model.SmsHandy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MessagesOverviewController {
     @FXML
@@ -54,12 +62,17 @@ public class MessagesOverviewController {
     @FXML
     private TableColumn<Message, String> dateColumnInReceived;
 
-//    Send Sms Elements
-    @FXML private Label infoLabel;
-    @FXML private TextArea smsTextArea;
-    @FXML private TextField receiverTextField;
-    @FXML private CheckBox isDirectCheckBox;
-    @FXML private Button sendSmsButton;
+    //    Send Sms Elements
+    @FXML
+    private Label infoLabel;
+    @FXML
+    private TextArea smsTextArea;
+    @FXML
+    private TextField receiverTextField;
+    @FXML
+    private CheckBox isDirectCheckBox;
+    @FXML
+    private Button sendSmsButton;
 
     private Main main;
     private SmsHandy smsHandy;
@@ -117,24 +130,52 @@ public class MessagesOverviewController {
             }
         }
 
-
-        try {
-
-            sendMessage(to, content, direct);
-
-            if (to.equals("*101#")) {
-                if (direct) infoLabel.setText("Direct message to *101# is redundant!");
-                else infoLabel.setText("Check received messages!");
+        Task<String> task = new Task<String>() {
+            @Override
+            public String call() {
+                try {
+                    Boolean result = sendMessage(to, content, direct);
+                    if (to.equals("*101#")) {
+                        if (direct) return "Direct message to *101# is redundant!";
+                        else return "Check received messages!";
+                    } else return "Your message successfully sent to " + to + "!";
+                } catch (ProviderNotFoundException e) {
+                    return "Sorry, provider for this number not found!";
+                } catch (InvalidNumberException | SmsHandyNotFoundException e) {
+                    return "Sorry, this number is invalid!";
+                }
             }
-            else infoLabel.setText("Your message successfully sent to " + to + "!");
-        } catch (ProviderNotFoundException e) {
-            infoLabel.setText("Sorry, provider for this number not found!");
-        } catch (InvalidNumberException | SmsHandyNotFoundException e) {
-            infoLabel.setText("Sorry, this number is invalid!");
-        }
+        };
+
+        Timeline timelineLoading = new Timeline(
+                new KeyFrame(Duration.seconds(0.1), ev -> sendSmsButton.setText("◷")),
+                new KeyFrame(Duration.seconds(0.2), ev -> sendSmsButton.setText("◶")),
+                new KeyFrame(Duration.seconds(0.3), ev -> sendSmsButton.setText("◵")),
+                new KeyFrame(Duration.seconds(0.4), ev -> sendSmsButton.setText("◴"))
+        );
+        timelineLoading.setCycleCount(Animation.INDEFINITE);
+        timelineLoading.play();
+
+        task.setOnSucceeded(e -> {
+            String info = task.getValue();
+            infoLabel.setText(info);
+            timelineLoading.stop();
+            sendSmsButton.setText("SEND SMS");
+        });
+
+        new Thread(task).start();
     }
 
-    private boolean sendMessage(String to, String content, boolean direct) throws ProviderNotFoundException, InvalidNumberException, SmsHandyNotFoundException {
+    private boolean sendMessage(String to, String content, boolean direct) throws
+            ProviderNotFoundException,
+            InvalidNumberException,
+            SmsHandyNotFoundException {
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if (direct) {
             this.main.getSmsHandyData().forEach(handy -> {
                 if (handy.getNumber().equals(to)) {

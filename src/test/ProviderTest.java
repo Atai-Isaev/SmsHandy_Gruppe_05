@@ -2,7 +2,6 @@ package test;
 
 import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.exception.SmsHandyHaveProviderException;
-import main.smsHandy.exception.SmsHandyNotFoundException;
 import main.smsHandy.model.*;
 import org.junit.jupiter.api.*;
 
@@ -17,7 +16,6 @@ public class ProviderTest {
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
 
-    // TODO: 11.05.2021 Ueber ein Bug in sendMethodTest() fragen
     private Provider provider;
     private Provider provider2;
     private SmsHandy prepaid;

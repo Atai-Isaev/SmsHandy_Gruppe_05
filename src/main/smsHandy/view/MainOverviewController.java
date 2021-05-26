@@ -90,7 +90,10 @@ public class MainOverviewController {
             return row;
         });
 
-        providerTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showProvidersSmsHandy(newValue));
+        providerTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            showProvidersSmsHandy(newValue);
+            changeCreateOrEditSmsHandyButtonPlaceholder("Neues Handy anlegen");
+        });
     }
 
     public void setMain(Main main) {
@@ -138,7 +141,6 @@ public class MainOverviewController {
 
                 Stage dialogStage = new Stage();
                 dialogStage.setTitle("Messages of SmsHandy");
-                dialogStage.initModality(Modality.WINDOW_MODAL);
                 dialogStage.initOwner(this.main.getPrimaryStage());
                 dialogStage.setScene(new Scene(page));
 
@@ -233,8 +235,17 @@ public class MainOverviewController {
     private void handleDeleteSmsHandy(){
         int selectedHandyIndex = smsHandyTableView.getSelectionModel().getSelectedIndex();
         if (selectedHandyIndex>=0){
-            main.getSmsHandyData().remove(smsHandyTableView.getItems().get(selectedHandyIndex));
-
+            changeCreateOrEditSmsHandyButtonPlaceholder("Neues Handy anlegen");
+            SmsHandy selectedHandy = smsHandyTableView.getItems().get(selectedHandyIndex);
+            main.getSmsHandyData().remove(selectedHandy);
+            smsHandyTableView.getSelectionModel().clearSelection();
+            for (Provider provider: main.getProvidersData()) {
+                if (provider.getName().equals(selectedHandy.getProvider().getName())) {
+                    provider.getSubscriber().remove(selectedHandy.getNumber());
+                    provider.getCredits().remove(selectedHandy.getNumber());
+                    break;
+                }
+            }
         }
         else{
             alert("Please select a SMS-Handy in the table.");
@@ -246,8 +257,9 @@ public class MainOverviewController {
         int selectedPoviderIndex = providerTableView.getSelectionModel().getSelectedIndex();
         if (selectedPoviderIndex>=0){
             Provider providerInProviderTV = providerTableView.getItems().get(selectedPoviderIndex);
-            smsHandyTableView.getItems().removeIf(smsHandy -> smsHandy.getProvider().getName().equals(providerInProviderTV.getName()));
+            main.getSmsHandyData().removeIf(smsHandy -> smsHandy.getProvider().getName().equals(providerInProviderTV.getName()));
             main.getProvidersData().remove(providerInProviderTV);
+            providerTableView.getSelectionModel().clearSelection();
         }
         else{
             alert("Please select a Provider in the table.");

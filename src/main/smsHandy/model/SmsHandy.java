@@ -1,5 +1,7 @@
 package main.smsHandy.model;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import main.smsHandy.exception.InvalidNumberException;
 import main.smsHandy.exception.ProviderNotFoundException;
 import main.smsHandy.exception.SmsHandyHaveProviderException;
@@ -16,8 +18,8 @@ import java.util.List;
 public abstract class SmsHandy {
     private String number;
     private Provider provider;
-    private List<Message> sent;
-    private List<Message> received;
+    private ObservableList<Message> sent;
+    private ObservableList<Message> received;
 
     /**
      * Konstruktor fuer Objekte der Klasse SmsHandy
@@ -29,8 +31,8 @@ public abstract class SmsHandy {
         try {
             this.number = number;
             this.provider = provider;
-            this.sent = new ArrayList<>();
-            this.received = new ArrayList<>();
+            this.sent = FXCollections.observableArrayList();
+            this.received = FXCollections.observableArrayList();
             this.getProvider().register(this);
         } catch (NullPointerException e) {
             throw new ProviderNotFoundException("Provider can't be null");
@@ -149,11 +151,19 @@ public abstract class SmsHandy {
             this.provider = provider;
     }
 
-    public List<Message> getSent() {
+    public ObservableList<Message> getSent() {
         return sent;
     }
 
-    public List<Message> getReceived() {
+    public void setSent(ObservableList<Message> sent) {
+        this.sent = sent;
+    }
+
+    public ObservableList<Message> getReceived() {
         return received;
+    }
+
+    public void setReceived(ObservableList<Message> received) {
+        this.received = received;
     }
 }
